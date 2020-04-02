@@ -1,0 +1,59 @@
+package com.belfoapps.anonymousmessaging.di.modules;
+
+import android.app.Activity;
+import android.content.Context;
+
+import com.belfoapps.anonymousmessaging.di.annotations.ActivityContext;
+import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
+import com.belfoapps.anonymousmessaging.presenters.MessagesPresenter;
+import com.belfoapps.anonymousmessaging.presenters.SendMessagePresenter;
+import com.google.firebase.auth.FirebaseAuth;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
+//import com.belfoapps.recipepro.utils.GDPR;
+
+@Module
+public class MVPModule {
+
+    private Activity mActivity;
+
+    //Constructor
+    public MVPModule(Activity mActivity) {
+        this.mActivity = mActivity;
+    }
+
+    //Context
+    @Provides
+    @ActivityContext
+    Context provideContext() {
+        return mActivity;
+    }
+
+    @Provides
+    Activity provideActivity() {
+        return mActivity;
+    }
+
+    @Provides
+    @Singleton
+    AuthenticationPresenter providesAuthPresenter(FirebaseAuth authInstance) {
+        return new AuthenticationPresenter(authInstance);
+    }
+
+    @Provides
+    @Singleton
+    MessagesPresenter providesMessagesPresenter(FirebaseAuth mAuth) {
+        return new MessagesPresenter(mAuth);
+    }
+
+    @Provides
+    @Singleton
+    SendMessagePresenter providesSendMessagePresenter() {
+        return new SendMessagePresenter();
+    }
+
+}

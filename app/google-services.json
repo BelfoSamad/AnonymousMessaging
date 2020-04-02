@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "818325637014",
+    "firebase_url": "https://anonymousmessages-66d40.firebaseio.com",
+    "project_id": "anonymousmessages-66d40",
+    "storage_bucket": "anonymousmessages-66d40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818325637014:android:011c6fbd18ddc98b7bbfb7",
+        "android_client_info": {
+          "package_name": "com.belfoapps.anonymousmessaging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818325637014-kle04u9dv4lh3qc3h2rb8k53uoel79pj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKG2zozDaKuM0HGbahC0POl2Oi2iXPXZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818325637014-kle04u9dv4lh3qc3h2rb8k53uoel79pj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
