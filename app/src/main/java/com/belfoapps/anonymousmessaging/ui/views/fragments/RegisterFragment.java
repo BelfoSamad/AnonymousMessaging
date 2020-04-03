@@ -23,6 +23,8 @@ public class RegisterFragment extends Fragment {
     private AuthenticationActivity mActivity;
 
     /**************************************** View Declarations ***********************************/
+    @BindView(R.id.username)
+    EditText username;
     @BindView(R.id.email)
     EditText email;
     @BindView(R.id.password)
@@ -33,8 +35,18 @@ public class RegisterFragment extends Fragment {
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.register)
     public void register() {
-        mPresenter.registerUser(email.getText().toString(),
+        mPresenter.registerUser(username.getText().toString(), email.getText().toString(),
                 password.getText().toString(), password_confirm.getText().toString());
+    }
+
+    @OnClick(R.id.google_register)
+    public void registerGoogle() {
+        mPresenter.registerWithGoogle();
+    }
+
+    @OnClick(R.id.facebook_register)
+    public void registerFacebook() {
+        mPresenter.registerWithFacebook();
     }
 
     /***************************************** Constructor ****************************************/
@@ -56,5 +68,25 @@ public class RegisterFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         return view;
+    }
+
+    public void setEmptyEmailError() {
+        email.setError("This Shouldn't Be Empty");
+    }
+
+    public void setInvalidEmailError() {
+        email.setError("Email is Invalid");
+    }
+
+    public void setEmptyPasswordError() {
+        password.setError("This Shouldn't Be Empty");
+    }
+
+    public void setNotMatchingPasswordError() {
+        password_confirm.setError("Password should be matching");
+    }
+
+    public void setEmptyUsernameError() {
+        username.setError("This Shouldn't Be Empty");
     }
 }

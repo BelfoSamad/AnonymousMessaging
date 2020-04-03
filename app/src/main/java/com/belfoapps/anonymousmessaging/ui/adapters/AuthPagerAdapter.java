@@ -1,4 +1,4 @@
-package com.belfoapps.anonymousmessaging.ui;
+package com.belfoapps.anonymousmessaging.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

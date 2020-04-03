@@ -11,9 +11,17 @@ public interface AuthenticationContract {
 
         void singInUser(String username, String password);
 
-        void registerUser(String email, String password, String confirm_password);
+        void signInWithGoogle();
 
-        boolean validateEmail(String email);
+        void signInWithFacebook();
+
+        void registerUser(String username, String email, String password, String confirm_password);
+
+        void registerWithGoogle();
+
+        void registerWithFacebook();
+
+        boolean emailNotValid(String email);
 
         boolean validatePassword(String password, String password_confirm);
     }
@@ -26,12 +34,13 @@ public interface AuthenticationContract {
 
         void enableTabAt(int x);
 
-        void showErrorEmail();
+        void showErrorEmail(String fragment, String type);
 
-        void showErrorPassword();
+        void showErrorPassword(String fragment, String type);
 
         void goToMessages();
 
+        void showErrorUsername();
     }
 
 }

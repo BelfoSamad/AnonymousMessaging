@@ -34,6 +34,16 @@ public class LoginFragment extends Fragment {
         mPresenter.singInUser(email.getText().toString(), password.getText().toString());
     }
 
+    @OnClick(R.id.google_login)
+    public void loginGoogle(){
+        mPresenter.signInWithGoogle();
+    }
+
+    @OnClick(R.id.facebook_login)
+    public void loginFacebook(){
+        mPresenter.signInWithFacebook();
+    }
+
     /***************************************** Constructor ****************************************/
     public LoginFragment() {
         // Required empty public constructor
@@ -53,5 +63,17 @@ public class LoginFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         return view;
+    }
+
+    public void setEmptyEmailError() {
+        email.setError("This Shouldn't Be Empty");
+    }
+
+    public void setInvalidEmailError() {
+        email.setError("Email is Invalid");
+    }
+
+    public void setEmptyPasswordError() {
+        password.setError("This Shouldn't Be Empty");
     }
 }

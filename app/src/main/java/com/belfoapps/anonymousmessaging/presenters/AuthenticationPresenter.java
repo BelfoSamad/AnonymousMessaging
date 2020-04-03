@@ -3,19 +3,30 @@ package com.belfoapps.anonymousmessaging.presenters;
 import android.util.Log;
 import android.util.Patterns;
 
+import androidx.annotation.NonNull;
+
 import com.belfoapps.anonymousmessaging.contracts.AuthenticationContract;
 import com.belfoapps.anonymousmessaging.ui.views.activities.AuthenticationActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class AuthenticationPresenter implements AuthenticationContract.Presenter {
     private static final String TAG = "AuthenticationPresenter";
     /***************************************** Declarations ***************************************/
     private AuthenticationActivity mView;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mDb;
 
     /***************************************** Constructor ****************************************/
-    public AuthenticationPresenter(FirebaseAuth mAuth) {
+    public AuthenticationPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb) {
         this.mAuth = mAuth;
+        this.mDb = mDb;
     }
 
     /***************************************** Essential Methods **********************************/
@@ -44,8 +55,16 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
 
     @Override
     public void singInUser(String email, String password) {
-        if (!validateEmail(email)) {
-            mView.showErrorEmail();
+        if (email.isEmpty()) {
+            mView.showErrorEmail("Login", "Empty");
+            return;
+        } else if (emailNotValid(email)) {
+            mView.showErrorEmail("Login", "Invalid");
+            return;
+        }
+
+        if (password.isEmpty()) {
+            mView.showErrorPassword("Login", "Empty");
             return;
         }
 
@@ -60,22 +79,50 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
     }
 
     @Override
-    public void registerUser(String email, String password, String confirm_password) {
-        if (!validateEmail(email)) {
-            mView.showErrorEmail();
-            Log.d(TAG, "registerUser: Email wrong");
+    public void signInWithGoogle() {
+
+    }
+
+    @Override
+    public void signInWithFacebook() {
+
+    }
+
+    @Override
+    public void registerUser(String username, String email, String password, String confirm_password) {
+        if (email.isEmpty())
+            mView.showErrorEmail("Register", "Empty");
+        else if (emailNotValid(email)) {
+            mView.showErrorEmail("Register", "Invalid");
             return;
         }
 
-        if (!validatePassword(password, confirm_password)) {
+        if (password.isEmpty() || confirm_password.isEmpty()) {
+            mView.showErrorPassword("Register", "Empty");
+            return;
+        } else if (!validatePassword(password, confirm_password)) {
             Log.d(TAG, "registerUser: Password Wrong");
-            mView.showErrorPassword();
+            mView.showErrorPassword("Register", "Not Match");
             return;
         }
+
+        if (username.isEmpty())
+            mView.showErrorUsername();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(username).build();
+                        user.updateProfile(profileUpdates)
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        Log.d(TAG, "User profile updated.");
+                                    }
+                                });
+
                         mView.goToMessages();
                     } else {
                         Log.d(TAG, "onComplete: Failed To Signup");
@@ -84,8 +131,18 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
     }
 
     @Override
-    public boolean validateEmail(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    public void registerWithGoogle() {
+
+    }
+
+    @Override
+    public void registerWithFacebook() {
+
+    }
+
+    @Override
+    public boolean emailNotValid(String email) {
+        return !Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     @Override

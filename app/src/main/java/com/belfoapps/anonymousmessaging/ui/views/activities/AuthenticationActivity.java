@@ -15,7 +15,7 @@ import com.belfoapps.anonymousmessaging.di.components.MVPComponent;
 import com.belfoapps.anonymousmessaging.di.modules.ApplicationModule;
 import com.belfoapps.anonymousmessaging.di.modules.MVPModule;
 import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
-import com.belfoapps.anonymousmessaging.ui.AuthPagerAdapter;
+import com.belfoapps.anonymousmessaging.ui.adapters.AuthPagerAdapter;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.LoginFragment;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.RegisterFragment;
 import com.belfoapps.anonymousmessaging.utils.Config;
@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class AuthenticationActivity extends AppCompatActivity implements AuthenticationContract.View {
     private static final String TAG = "LoginActivity";
@@ -36,6 +35,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     private MVPComponent mvpComponent;
     @Inject
     AuthenticationPresenter mPresenter;
+    private LoginFragment loginFragment;
+    private RegisterFragment registerFragment;
     private AuthPagerAdapter mAdapter;
 
     /**************************************** View Declarations ***********************************/
@@ -87,8 +88,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     public void initViewPager() {
         ArrayList<Fragment> fragments = new ArrayList<>();
 
-        LoginFragment loginFragment = new LoginFragment(mPresenter, this);
-        RegisterFragment registerFragment = new RegisterFragment(mPresenter, this);
+        loginFragment = new LoginFragment(mPresenter, this);
+        registerFragment = new RegisterFragment(mPresenter, this);
 
         fragments.add(loginFragment);
         fragments.add(registerFragment);
@@ -146,17 +147,57 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     }
 
     @Override
-    public void showErrorEmail() {
+    public void showErrorEmail(String fragment, String type) {
+        switch (fragment) {
+            case "Login":
+                switch (type) {
+                    case "Empty":
+                        loginFragment.setEmptyEmailError();
+                        break;
+                    case "Invalid":
+                        loginFragment.setInvalidEmailError();
+                        break;
+                }
+                break;
+            case "Register":
+                switch (type) {
+                    case "Empty":
+                        registerFragment.setEmptyEmailError();
+                        break;
+                    case "Invalid":
+                        registerFragment.setInvalidEmailError();
+                        break;
+                }
+                break;
+        }
     }
 
     @Override
-    public void showErrorPassword() {
-
+    public void showErrorPassword(String fragment, String type) {
+        switch (fragment) {
+            case "Login":
+                loginFragment.setEmptyPasswordError();
+                break;
+            case "Register":
+                switch (type) {
+                    case "Empty":
+                        registerFragment.setEmptyPasswordError();
+                        break;
+                    case "Not Match":
+                        registerFragment.setNotMatchingPasswordError();
+                        break;
+                }
+                break;
+        }
     }
 
     @Override
     public void goToMessages() {
-        //TODO: Send User
         startActivity(new Intent(AuthenticationActivity.this, MessagesActivity.class));
+    }
+
+    @Override
+    public void showErrorUsername() {
+        registerFragment.setEmptyUsernameError();
     }
 }

@@ -8,6 +8,7 @@ import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
 import com.belfoapps.anonymousmessaging.presenters.MessagesPresenter;
 import com.belfoapps.anonymousmessaging.presenters.SendMessagePresenter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import javax.inject.Singleton;
 
@@ -40,14 +41,14 @@ public class MVPModule {
 
     @Provides
     @Singleton
-    AuthenticationPresenter providesAuthPresenter(FirebaseAuth authInstance) {
-        return new AuthenticationPresenter(authInstance);
+    AuthenticationPresenter providesAuthPresenter(FirebaseAuth authInstance, FirebaseFirestore mDb) {
+        return new AuthenticationPresenter(authInstance, mDb);
     }
 
     @Provides
     @Singleton
-    MessagesPresenter providesMessagesPresenter(FirebaseAuth mAuth) {
-        return new MessagesPresenter(mAuth);
+    MessagesPresenter providesMessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb) {
+        return new MessagesPresenter(mAuth, mDb);
     }
 
     @Provides

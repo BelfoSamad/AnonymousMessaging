@@ -8,6 +8,7 @@ import com.belfoapps.anonymousmessaging.di.annotations.ApplicationContext;
 import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
 import com.belfoapps.anonymousmessaging.utils.Config;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import javax.inject.Singleton;
@@ -80,6 +81,12 @@ public class ApplicationModule {
     @Singleton
     FirebaseAuth provideFirebaseAuthInstance() {
         return FirebaseAuth.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    FirebaseFirestore provideFirebaseFirestoreInstance() {
+        return FirebaseFirestore.getInstance();
     }
 
     /*
