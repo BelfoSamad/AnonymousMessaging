@@ -53,8 +53,8 @@ public class MVPModule {
 
     @Provides
     @Singleton
-    SendMessagePresenter providesSendMessagePresenter() {
-        return new SendMessagePresenter();
+    SendMessagePresenter providesSendMessagePresenter(FirebaseFirestore mDb) {
+        return new SendMessagePresenter(mDb);
     }
 
 }

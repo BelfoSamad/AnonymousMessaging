@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
 import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
 import com.belfoapps.anonymousmessaging.ui.views.activities.AuthenticationActivity;
+import com.google.android.material.textfield.TextInputLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,23 +24,23 @@ public class LoginFragment extends Fragment {
 
     /**************************************** View Declarations ***********************************/
     @BindView(R.id.email)
-    EditText email;
+    TextInputLayout email;
     @BindView(R.id.password)
-    EditText password;
+    TextInputLayout password;
 
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.login)
     public void login() {
-        mPresenter.singInUser(email.getText().toString(), password.getText().toString());
+        mPresenter.singInUser(email.getEditText().getText().toString(), password.getEditText().getText().toString());
     }
 
     @OnClick(R.id.google_login)
-    public void loginGoogle(){
+    public void loginGoogle() {
         mPresenter.signInWithGoogle();
     }
 
     @OnClick(R.id.facebook_login)
-    public void loginFacebook(){
+    public void loginFacebook() {
         mPresenter.signInWithFacebook();
     }
 

@@ -1,5 +1,7 @@
 package com.belfoapps.anonymousmessaging.contracts;
 
+import android.net.Uri;
+
 import com.belfoapps.anonymousmessaging.base.BasePresenter;
 import com.belfoapps.anonymousmessaging.base.BaseView;
 import com.belfoapps.anonymousmessaging.pojo.Message;
@@ -14,7 +16,7 @@ public interface MessagesContract {
 
         void copyUid();
 
-        void updateProfilePicture();
+        void updateProfilePicture(Uri image_uri);
 
         void initRecyclerView();
 
@@ -30,7 +32,9 @@ public interface MessagesContract {
 
     interface View extends BaseView {
 
-        void setUserInfo(String username, String uid);
+        void setUserInfo(String username, String uid, Uri profile_picture_uri);
+
+        void setProfilePicture(Uri image_uri);
 
         void initRecyclerView(ArrayList<Message> messages);
 
@@ -41,7 +45,6 @@ public interface MessagesContract {
         void showNoMessages();
 
         void showMessages();
-
     }
 
 }

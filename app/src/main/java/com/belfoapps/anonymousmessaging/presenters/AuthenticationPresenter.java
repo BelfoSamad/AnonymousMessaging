@@ -3,18 +3,15 @@ package com.belfoapps.anonymousmessaging.presenters;
 import android.util.Log;
 import android.util.Patterns;
 
-import androidx.annotation.NonNull;
-
 import com.belfoapps.anonymousmessaging.contracts.AuthenticationContract;
 import com.belfoapps.anonymousmessaging.ui.views.activities.AuthenticationActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticationPresenter implements AuthenticationContract.Presenter {
     private static final String TAG = "AuthenticationPresenter";
@@ -121,6 +118,17 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
                                     if (task1.isSuccessful()) {
                                         Log.d(TAG, "User profile updated.");
                                     }
+                                });
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("uid", user.getUid());
+                        data.put("username", username);
+                        mDb.collection("users")
+                                .add(data)
+                                .addOnCompleteListener(task12 -> {
+                                    if (task12.isSuccessful())
+                                        Log.d(TAG, "onComplete: Adding Completed");
+                                    else Log.d(TAG, "onComplete: Adding Failed");
                                 });
 
                         mView.goToMessages();

@@ -3,14 +3,20 @@ package com.belfoapps.anonymousmessaging.presenters;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.belfoapps.anonymousmessaging.contracts.MessagesContract;
 import com.belfoapps.anonymousmessaging.pojo.Message;
 import com.belfoapps.anonymousmessaging.ui.views.activities.MessagesActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -53,7 +59,7 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     /***************************************** Methods ********************************************/
     @Override
     public void setUserInfo() {
-        mView.setUserInfo(mUser.getDisplayName(), mAuth.getUid());
+        mView.setUserInfo(mUser.getDisplayName(), mAuth.getUid(), mUser.getPhotoUrl());
     }
 
     @Override
@@ -66,8 +72,17 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     }
 
     @Override
-    public void updateProfilePicture() {
+    public void updateProfilePicture(Uri image_uri) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(image_uri)
+                .build();
 
+        mUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mView.setProfilePicture(image_uri);
+                    }
+                });
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -40,6 +41,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     private AuthPagerAdapter mAdapter;
 
     /**************************************** View Declarations ***********************************/
+    @BindView(R.id.auth_container)
+    CardView container;
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
     @BindView(R.id.tablayout)
@@ -51,7 +54,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_authentication);
+        setContentView(R.layout.activity_auth);
 
         //Initialize Dagger For Application
         mvpComponent = getComponent();
@@ -86,6 +89,8 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     /**************************************** Methods *********************************************/
     @Override
     public void initViewPager() {
+        container.setBackground(getResources().getDrawable(R.drawable.cardview_top_radius));
+
         ArrayList<Fragment> fragments = new ArrayList<>();
 
         loginFragment = new LoginFragment(mPresenter, this);

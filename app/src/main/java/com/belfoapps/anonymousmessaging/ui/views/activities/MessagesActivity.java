@@ -1,11 +1,15 @@
 package com.belfoapps.anonymousmessaging.ui.views.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -20,6 +24,11 @@ import com.belfoapps.anonymousmessaging.pojo.Message;
 import com.belfoapps.anonymousmessaging.presenters.MessagesPresenter;
 import com.belfoapps.anonymousmessaging.ui.MessagesItemDecoration;
 import com.belfoapps.anonymousmessaging.ui.adapters.MessagesAdapter;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
@@ -30,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MessagesActivity extends AppCompatActivity implements MessagesContract.View {
+    private static final String TAG = "MessagesActivity";
     private static final int COL_NUM = 1;
     /**************************************** Declarations ****************************************/
     private MVPComponent mvpComponent;
@@ -40,6 +50,8 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     /**************************************** View Declarations ***********************************/
     @BindView(R.id.username)
     TextView username;
+    @BindView(R.id.profile_picture)
+    ImageView profile_picture;
     @BindView(R.id.uid)
     TextView uid;
     @BindView(R.id.recyclerview)
@@ -52,7 +64,9 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.update_profile_picture)
     public void updateProfilePicture() {
-        mPresenter.updateProfilePicture();
+        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, 1);
     }
 
     @OnClick(R.id.copy_uid)
@@ -103,11 +117,41 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
         return mvpComponent;
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Uri chosenImageUri = data.getData();
+            mPresenter.updateProfilePicture(chosenImageUri);
+        }
+    }
+
     /**************************************** Methods *********************************************/
     @Override
-    public void setUserInfo(String username, String uid) {
+    public void setUserInfo(String username, String uid, Uri profile_picture_uri) {
         this.username.setText(username);
         this.uid.setText(uid);
+        //setProfilePicture(profile_picture_uri);
+    }
+
+    @Override
+    public void setProfilePicture(Uri image_uri) {
+        Glide.with(this)
+                .load(image_uri)
+                .fitCenter()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.d(TAG, "onLoadFailed");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d(TAG, "onResourceReady");
+                        return false;
+                    }
+                })
+                .into(profile_picture);
     }
 
     @Override
