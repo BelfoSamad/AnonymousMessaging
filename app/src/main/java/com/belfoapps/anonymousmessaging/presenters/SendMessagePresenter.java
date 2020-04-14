@@ -2,20 +2,15 @@ package com.belfoapps.anonymousmessaging.presenters;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.belfoapps.anonymousmessaging.contracts.SendMessageContract;
 import com.belfoapps.anonymousmessaging.ui.views.activities.SendMessageActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SendMessagePresenter implements SendMessageContract.Presenter{
+public class SendMessagePresenter implements SendMessageContract.Presenter {
     private static final String TAG = "SendMessagePresenter";
     /***************************************** Declarations ***************************************/
     private SendMessageActivity mView;
@@ -41,6 +36,7 @@ public class SendMessagePresenter implements SendMessageContract.Presenter{
     public boolean isAttached() {
         return !(mView == null);
     }
+
     /***************************************** Methods ********************************************/
 
     @Override
@@ -70,6 +66,7 @@ public class SendMessagePresenter implements SendMessageContract.Presenter{
     @Override
     public void sendMessage(String uid, String message) {
         HashMap<String, Object> data = new HashMap<>();
+
         data.put("uid", uid);
         data.put("message", message);
         data.put("liked", false);

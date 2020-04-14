@@ -1,6 +1,8 @@
 package com.belfoapps.anonymousmessaging.pojo;
 
-public class Message {
+import java.util.Objects;
+
+public class Message implements Cloneable {
     private String id;
     private String uid;
     private String message;
@@ -47,4 +49,23 @@ public class Message {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(id, message.id);
+    }
+
+    public Object clone() {
+        Object clone = null;
+        try {
+            clone = super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return clone;
+    }
+
 }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "818325637014-g15vugpd67pmoq1sug9icr2dgt964e67.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.belfoapps.anonymousmessaging",
+            "certificate_hash": "ad79857e769e77750d799cce6bf2ef6ed20cf91b"
+          }
+        },
+        {
           "client_id": "818325637014-kle04u9dv4lh3qc3h2rb8k53uoel79pj.apps.googleusercontent.com",
           "client_type": 3
         }

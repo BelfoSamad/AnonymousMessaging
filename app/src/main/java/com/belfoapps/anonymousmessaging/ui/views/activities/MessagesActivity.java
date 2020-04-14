@@ -9,10 +9,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.contracts.MessagesContract;
@@ -29,6 +32,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 
@@ -46,6 +50,7 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     @Inject
     MessagesPresenter mPresenter;
     private MessagesAdapter mAdapter;
+    private BottomSheetBehavior logout_popup_behavior;
 
     /**************************************** View Declarations ***********************************/
     @BindView(R.id.username)
@@ -56,10 +61,17 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     TextView uid;
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
+    @BindView(R.id.swipe_refresh)
+    SwipeRefreshLayout mRefresh;
     @BindView(R.id.no_messages)
     ImageView noMessages;
     @BindView(R.id.no_network)
     ImageView noNetwork;
+
+    @BindView(R.id.info_popup)
+    ConstraintLayout info_popup;
+    @BindView(R.id.index)
+    ImageView index;
 
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.update_profile_picture)
@@ -77,9 +89,19 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     @OnClick(R.id.logout)
     public void logout() {
         mPresenter.logout();
-        startActivity(new Intent(MessagesActivity.this, AuthenticationActivity.class));
+        startActivity(new Intent(MessagesActivity.this, AuthActivity.class));
     }
 
+    @OnClick(R.id.popup_logout_kicker)
+    public void openLogoutPopup(View v) {
+        if (v.getTag().equals(0)) {
+            showLogoutPopup();
+            v.setTag(1);
+        } else {
+            hideLogoutPopup();
+            v.setTag(0);
+        }
+    }
 
     /**************************************** Essential Methods ***********************************/
     @Override
@@ -102,7 +124,13 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
         mPresenter.setUserInfo();
 
         //init recyclerview
+        mRefresh.setRefreshing(true);
         mPresenter.initRecyclerView();
+
+        mRefresh.setOnRefreshListener(() -> mPresenter.updateRecyclerView());
+
+
+        initLogoutPopup();
     }
 
     @Override
@@ -130,34 +158,63 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     public void setUserInfo(String username, String uid, Uri profile_picture_uri) {
         this.username.setText(username);
         this.uid.setText(uid);
-        //setProfilePicture(profile_picture_uri);
+        setProfilePicture(profile_picture_uri);
     }
 
     @Override
     public void setProfilePicture(Uri image_uri) {
-        Glide.with(this)
-                .load(image_uri)
-                .fitCenter()
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.d(TAG, "onLoadFailed");
-                        return false;
-                    }
+        Log.d(TAG, "setProfilePicture: " + image_uri);
+        if (image_uri != null)
+            Glide.with(this)
+                    .load(image_uri)
+                    .fitCenter()
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            Log.d(TAG, "onLoadFailed");
+                            return false;
+                        }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d(TAG, "onResourceReady");
-                        return false;
-                    }
-                })
-                .into(profile_picture);
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Log.d(TAG, "onResourceReady");
+                            return false;
+                        }
+                    })
+                    .into(profile_picture);
+    }
+
+    @Override
+    public void initLogoutPopup() {
+        logout_popup_behavior = BottomSheetBehavior.from(info_popup);
+
+        logout_popup_behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                if (slideOffset > 0) {
+                    index.setImageResource(R.drawable.index_popup);
+                } else {
+                    index.setImageResource(R.drawable.index);
+                }
+            }
+        });
     }
 
     @Override
     public void initRecyclerView(ArrayList<Message> messages) {
         StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(COL_NUM, StaggeredGridLayoutManager.VERTICAL);
-        mAdapter = new MessagesAdapter(messages, this, mPresenter);
+
+        ArrayList<Message> messages_copy = new ArrayList<>();
+        for (Message message :
+                messages) {
+            messages_copy.add((Message) message.clone());
+        }
+        mAdapter = new MessagesAdapter(messages_copy, this, mPresenter);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new MessagesItemDecoration());
@@ -177,6 +234,9 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
 
     @Override
     public void showNoNetwork() {
+        Log.d(TAG, "showNoNetwork: In");
+        mRefresh.setRefreshing(false);
+
         noNetwork.setVisibility(View.VISIBLE);
         noMessages.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
@@ -184,6 +244,9 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
 
     @Override
     public void showNoMessages() {
+        Log.d(TAG, "showNoMessages: In");
+        mRefresh.setRefreshing(false);
+
         noMessages.setVisibility(View.VISIBLE);
         noNetwork.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
@@ -192,9 +255,21 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
 
     @Override
     public void showMessages() {
+        Log.d(TAG, "showMessages: In");
+        mRefresh.setRefreshing(false);
+
         mRecyclerView.setVisibility(View.VISIBLE);
         noNetwork.setVisibility(View.GONE);
         noMessages.setVisibility(View.GONE);
+    }
 
+    @Override
+    public void showLogoutPopup() {
+        logout_popup_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    @Override
+    public void hideLogoutPopup() {
+        logout_popup_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 }

@@ -2,10 +2,11 @@ package com.belfoapps.anonymousmessaging.ui.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -20,6 +21,12 @@ import com.belfoapps.anonymousmessaging.ui.adapters.AuthPagerAdapter;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.LoginFragment;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.RegisterFragment;
 import com.belfoapps.anonymousmessaging.utils.Config;
+import com.facebook.login.LoginManager;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -29,9 +36,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class AuthenticationActivity extends AppCompatActivity implements AuthenticationContract.View {
+public class AuthActivity extends AppCompatActivity implements AuthenticationContract.View {
     private static final String TAG = "LoginActivity";
+    private static final int RC_SIGN_IN = 9001;
     /**************************************** Declarations ****************************************/
     private MVPComponent mvpComponent;
     @Inject
@@ -41,14 +50,24 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
     private AuthPagerAdapter mAdapter;
 
     /**************************************** View Declarations ***********************************/
-    @BindView(R.id.auth_container)
-    CardView container;
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
     @BindView(R.id.tablayout)
     TabLayout mTab;
+    @BindView(R.id.facebook_login_button)
+    LoginButton facebook_login;
 
     /**************************************** Click Listeners *************************************/
+    @OnClick(R.id.google_login)
+    public void loginGoogle() {
+        Intent signInIntent = mPresenter.getGoogleClient().getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @OnClick(R.id.facebook_login)
+    public void loginFacebook() {
+        facebook_login.performClick();
+    }
 
     /**************************************** Essential Methods ***********************************/
     @Override
@@ -66,6 +85,12 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
 
         //Attach View To Presenter
         mPresenter.attach(this);
+
+        //setup Google Conf
+        mPresenter.configGoogleSignIn();
+
+        //Init Facebook Login
+        mPresenter.configFacebookLoginButton(facebook_login);
     }
 
     @Override
@@ -86,11 +111,26 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
         mPresenter.checkUserConnected();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                mPresenter.signInWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+                // ...
+            }
+        } else mPresenter.getCallbackManager().onActivityResult(requestCode, resultCode, data);
+    }
+
     /**************************************** Methods *********************************************/
     @Override
     public void initViewPager() {
-        container.setBackground(getResources().getDrawable(R.drawable.cardview_top_radius));
-
         ArrayList<Fragment> fragments = new ArrayList<>();
 
         loginFragment = new LoginFragment(mPresenter, this);
@@ -99,7 +139,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
         fragments.add(loginFragment);
         fragments.add(registerFragment);
 
-        mAdapter = new AuthPagerAdapter(getSupportFragmentManager(), fragments, AuthenticationActivity.this);
+        mAdapter = new AuthPagerAdapter(getSupportFragmentManager(), fragments, AuthActivity.this);
         mViewPager.setAdapter(mAdapter);
 
         initTabLayout();
@@ -198,7 +238,7 @@ public class AuthenticationActivity extends AppCompatActivity implements Authent
 
     @Override
     public void goToMessages() {
-        startActivity(new Intent(AuthenticationActivity.this, MessagesActivity.class));
+        startActivity(new Intent(AuthActivity.this, MessagesActivity.class));
     }
 
     @Override

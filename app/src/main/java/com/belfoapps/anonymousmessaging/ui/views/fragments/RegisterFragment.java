@@ -1,15 +1,23 @@
 package com.belfoapps.anonymousmessaging.ui.views.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
-import com.belfoapps.anonymousmessaging.ui.views.activities.AuthenticationActivity;
+import com.belfoapps.anonymousmessaging.ui.views.activities.AuthActivity;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
 import butterknife.BindView;
@@ -20,7 +28,7 @@ public class RegisterFragment extends Fragment {
     private static final String TAG = "RegisterFragment";
     /**************************************** Declarations ****************************************/
     private AuthenticationPresenter mPresenter;
-    private AuthenticationActivity mActivity;
+    private AuthActivity mActivity;
 
     /**************************************** View Declarations ***********************************/
     @BindView(R.id.username)
@@ -39,22 +47,12 @@ public class RegisterFragment extends Fragment {
                 password.getEditText().getText().toString(), password_confirm.getEditText().getText().toString());
     }
 
-    @OnClick(R.id.google_register)
-    public void registerGoogle() {
-        mPresenter.registerWithGoogle();
-    }
-
-    @OnClick(R.id.facebook_register)
-    public void registerFacebook() {
-        mPresenter.registerWithFacebook();
-    }
-
     /***************************************** Constructor ****************************************/
     public RegisterFragment() {
         // Required empty public constructor
     }
 
-    public RegisterFragment(AuthenticationPresenter mPresenter, AuthenticationActivity mActivity) {
+    public RegisterFragment(AuthenticationPresenter mPresenter, AuthActivity mActivity) {
         this.mPresenter = mPresenter;
         this.mActivity = mActivity;
     }

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.belfoapps.anonymousmessaging.di.annotations.ActivityContext;
 import com.belfoapps.anonymousmessaging.di.modules.ApplicationModule;
 import com.belfoapps.anonymousmessaging.di.modules.MVPModule;
-import com.belfoapps.anonymousmessaging.ui.views.activities.AuthenticationActivity;
+import com.belfoapps.anonymousmessaging.ui.views.activities.AuthActivity;
 import com.belfoapps.anonymousmessaging.ui.views.activities.MessagesActivity;
 import com.belfoapps.anonymousmessaging.ui.views.activities.SendMessageActivity;
 
@@ -18,7 +18,7 @@ import dagger.Component;
 public interface MVPComponent {
 
     //Inject in Activities
-    void inject(AuthenticationActivity authenticationActivity);
+    void inject(AuthActivity authActivity);
 
     void inject(MessagesActivity messagesActivity);
 

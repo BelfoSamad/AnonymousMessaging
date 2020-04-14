@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/lightBackgroundColor"
     tools:context=".ui.views.activities.SendMessageActivity">
 
     <ImageButton
@@ -33,8 +33,8 @@
         android:id="@+id/message_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.60">
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/message_for"
             android:layout_marginTop="16dp"
+            android:background="@drawable/send_message_background"
             android:hint="Message"
-            android:lines="6"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             app:endIconMode="clear_text"
@@ -67,7 +67,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="6" />
+                android:background="@null"
+                android:inputType="textLongMessage"
+                android:paddingTop="8dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,9 +80,31 @@
             android:layout_below="@id/the_message"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
-            android:background="@color/colorAccent"
+            android:background="@drawable/send_btn"
             android:text="Send"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/colorAccent" />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/no_network"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:background="@drawable/no_network"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
+
+    <ImageView
+        android:id="@+id/no_user"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:background="@drawable/no_user"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

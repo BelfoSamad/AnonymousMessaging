@@ -22,7 +22,7 @@ public interface MessagesContract {
 
         void updateRecyclerView();
 
-        void deleteMessage(Message message);
+        void deleteMessage(int position);
 
         void likeMessage(Message message, boolean liked);
 
@@ -36,6 +36,8 @@ public interface MessagesContract {
 
         void setProfilePicture(Uri image_uri);
 
+        void initLogoutPopup();
+
         void initRecyclerView(ArrayList<Message> messages);
 
         void updateRecyclerView(ArrayList<Message> messages);
@@ -45,6 +47,10 @@ public interface MessagesContract {
         void showNoMessages();
 
         void showMessages();
+
+        void showLogoutPopup();
+
+        void hideLogoutPopup();
     }
 
 }

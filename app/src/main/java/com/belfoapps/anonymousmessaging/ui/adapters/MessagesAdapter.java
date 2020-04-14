@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,14 +42,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.ViewHolder holder, int position) {
         holder.message.setText(mMessages.get(position).getMessage());
-        holder.delete.setOnClickListener(v -> mPresenter.deleteMessage(mMessages.get(position)));
-        //TODO: set Like src
+        holder.delete.setOnClickListener(v -> mPresenter.deleteMessage(position));
+        if (mMessages.get(position).isLiked())
+            holder.like.setImageResource(R.drawable.liked);
+        else holder.like.setImageResource(R.drawable.unliked);
         holder.like.setOnClickListener(v -> {
             if (!mMessages.get(position).isLiked())
-                Toast.makeText(mView, "Liked", Toast.LENGTH_SHORT).show();
-            else Toast.makeText(mView, "Not Liked", Toast.LENGTH_SHORT).show();
+                holder.like.setImageResource(R.drawable.liked);
+            else holder.like.setImageResource(R.drawable.unliked);
 
             mPresenter.likeMessage(mMessages.get(position), !mMessages.get(position).isLiked());
+            mMessages.get(position).setLiked(!mMessages.get(position).isLiked());
         });
     }
 
@@ -66,7 +68,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     public void addAll(ArrayList<Message> messages) {
-        mMessages = messages;
+        for (Message message :
+                messages) {
+            mMessages.add((Message) message.clone());
+        }
         notifyDataSetChanged();
     }
 

@@ -7,18 +7,19 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
+import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.contracts.MessagesContract;
 import com.belfoapps.anonymousmessaging.pojo.Message;
 import com.belfoapps.anonymousmessaging.ui.views.activities.MessagesActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +32,15 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDb;
     private FirebaseUser mUser;
+    private FirebaseStorage mStorage;
     private ArrayList<Message> messages;
+    private StorageReference storageRef;
 
     /***************************************** Constructor ****************************************/
-    public MessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb) {
+    public MessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb, FirebaseStorage mStorage) {
         this.mAuth = mAuth;
         this.mDb = mDb;
+        storageRef = mStorage.getReference();
         mUser = mAuth.getCurrentUser();
     }
 
@@ -59,13 +63,18 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     /***************************************** Methods ********************************************/
     @Override
     public void setUserInfo() {
-        mView.setUserInfo(mUser.getDisplayName(), mAuth.getUid(), mUser.getPhotoUrl());
+        storageRef.child("images/" + mUser.getUid()).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    mView.setUserInfo(mUser.getDisplayName(), mAuth.getUid(), uri);
+                })
+                .addOnFailureListener(e -> mView.setUserInfo(mUser.getDisplayName(), mAuth.getUid(), null));
     }
 
     @Override
     public void copyUid() {
         ClipboardManager clipboard = (ClipboardManager) mView.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Anonymous Messages", mAuth.getUid());
+        ClipData clip = ClipData.newPlainText("Anonymous Messages",
+                "https://" + mView.getResources().getString(R.string.website) + "?uid=" + mAuth.getUid());
         clipboard.setPrimaryClip(clip);
 
         Toast.makeText(mView, "UID Copied", Toast.LENGTH_SHORT).show();
@@ -73,16 +82,22 @@ public class MessagesPresenter implements MessagesContract.Presenter {
 
     @Override
     public void updateProfilePicture(Uri image_uri) {
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(image_uri)
-                .build();
+        Log.d(TAG, "updateProfilePicture: " + image_uri.toString());
 
-        mUser.updateProfile(profileUpdates)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        mView.setProfilePicture(image_uri);
-                    }
-                });
+        //Uploading the File
+        Log.d(TAG, "updateProfilePicture: " + image_uri.getLastPathSegment());
+        StorageReference riversRef = storageRef.child("images/" + mUser.getUid());
+        UploadTask uploadTask = riversRef.putFile(image_uri);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+                    storageRef.child("images/" + mUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            mView.setProfilePicture(uri);
+                        }
+                    });
+                })
+                .addOnFailureListener(exception -> Toast.makeText(mView, "Couldn't Update Profile Picture", Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -91,14 +106,15 @@ public class MessagesPresenter implements MessagesContract.Presenter {
                 .whereEqualTo("uid", mAuth.getUid())
                 .get()
                 .addOnCompleteListener(task -> {
+                    messages = new ArrayList<>();
                     if (task.isSuccessful()) {
-                        messages = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Log.d(TAG, document.getId() + " => " + document.getData());
                             Message message = document.toObject(Message.class);
                             message.setId(document.getId());
                             messages.add(message);
                         }
+
                         mView.initRecyclerView(messages);
 
                         if (messages.size() == 0)
@@ -113,28 +129,53 @@ public class MessagesPresenter implements MessagesContract.Presenter {
 
     @Override
     public void updateRecyclerView() {
-        mView.updateRecyclerView(messages);
+        mDb.collection("messages")
+                .whereEqualTo("uid", mAuth.getUid())
+                .get()
+                .addOnCompleteListener(task -> {
+                    messages = new ArrayList<>();
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            Message message = document.toObject(Message.class);
+                            message.setId(document.getId());
+                            messages.add(message);
+                        }
 
-        if (messages == null)
-            mView.showNoNetwork();
-        else if (messages.size() == 0)
-            mView.showNoMessages();
-        else mView.showMessages();
+                        mView.updateRecyclerView(messages);
+
+                        if (messages.size() == 0)
+                            mView.showNoMessages();
+                        else mView.showMessages();
+                    } else {
+                        mView.updateRecyclerView(messages);
+                        mView.showNoNetwork();
+                    }
+                });
     }
 
     @Override
-    public void deleteMessage(Message message) {
-        messages.remove(message);
-        mDb.collection("messages").document(message.getId())
+    public void deleteMessage(int position) {
+        mDb.collection("messages").document(messages.get(position).getId())
                 .delete()
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully deleted!"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error deleting document", e));
-        updateRecyclerView();
+                .addOnSuccessListener(aVoid -> {
+                    messages.remove(position);
+
+                    mView.updateRecyclerView(messages);
+
+                    if (messages == null)
+                        mView.showNoNetwork();
+                    else if (messages.size() == 0)
+                        mView.showNoMessages();
+                    else mView.showMessages();
+                })
+                .addOnFailureListener(e -> Toast.makeText(mView, "Couldn't delete message.", Toast.LENGTH_SHORT).show());
     }
 
     @Override
     public void likeMessage(Message message, boolean liked) {
         Map<String, Object> update = new HashMap<>();
+        Log.d(TAG, "likeMessage: " + liked);
         update.put("liked", liked);
         mDb.collection("messages")
                 .document(message.getId())
@@ -148,5 +189,6 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     @Override
     public void logout() {
         mAuth.signOut();
+        LoginManager.getInstance().logOut();
     }
 }

@@ -3,8 +3,11 @@ package com.belfoapps.anonymousmessaging.ui.views.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,20 +34,28 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     SendMessagePresenter mPresenter;
 
     /**************************************** View Declarations ***********************************/
+    @BindView(R.id.message_container)
+    RelativeLayout mContainer;
     @BindView(R.id.message_for)
     TextView message_for;
     @BindView(R.id.the_message)
     TextInputLayout message;
+    @BindView(R.id.no_user)
+    ImageView noUser;
+    @BindView(R.id.no_network)
+    ImageView noNetwork;
 
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.back)
     public void goBack() {
-
+        startActivity(new Intent(SendMessageActivity.this, AuthActivity.class));
     }
 
     @OnClick(R.id.send)
     public void sendMessage() {
         mPresenter.sendMessage(getIntent().getData().getQueryParameter("uid"), message.getEditText().getText().toString());
+        message.getEditText().setText("");
+        Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
     }
 
     /**************************************** Essential Methods ***********************************/
@@ -67,6 +78,8 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         Intent intent = getIntent();
         Uri data = intent.getData();
 
+        message.setHintEnabled(false);
+
         mPresenter.checkUserExist(data.getQueryParameter("uid"));
     }
 
@@ -85,16 +98,23 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     /**************************************** Methods *********************************************/
     @Override
     public void showUserNotFound() {
-
+        noUser.setVisibility(View.VISIBLE);
+        noNetwork.setVisibility(View.GONE);
+        mContainer.setVisibility(View.GONE);
     }
 
     @Override
     public void showSendMessage(String username) {
         message_for.setText("Message For " + username);
+        noUser.setVisibility(View.GONE);
+        noNetwork.setVisibility(View.GONE);
+        mContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showNoNetwork() {
-
+        noUser.setVisibility(View.GONE);
+        noNetwork.setVisibility(View.VISIBLE);
+        mContainer.setVisibility(View.GONE);
     }
 }
