@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -70,8 +72,12 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
 
     @BindView(R.id.info_popup)
     ConstraintLayout info_popup;
+    @BindView(R.id.progress_logout)
+    ProgressBar loading;
     @BindView(R.id.index)
     ImageView index;
+    @BindView(R.id.logout)
+    Button logout;
 
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.update_profile_picture)
@@ -88,6 +94,7 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
 
     @OnClick(R.id.logout)
     public void logout() {
+        showLogoutLoading();
         mPresenter.logout();
         startActivity(new Intent(MessagesActivity.this, AuthActivity.class));
     }
@@ -129,6 +136,7 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
 
         mRefresh.setOnRefreshListener(() -> mPresenter.updateRecyclerView());
 
+        loading.bringToFront();
 
         initLogoutPopup();
     }
@@ -271,5 +279,19 @@ public class MessagesActivity extends AppCompatActivity implements MessagesContr
     @Override
     public void hideLogoutPopup() {
         logout_popup_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public void showLogoutLoading() {
+        Log.d(TAG, "showLogoutLoading");
+        logout.setText("");
+        loading.setVisibility(View.VISIBLE);
+        loading.bringToFront();
+    }
+
+    @Override
+    public void hideLogoutLoading() {
+        logout.setText("Logout");
+        loading.setVisibility(View.GONE);
     }
 }

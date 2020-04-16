@@ -16,12 +16,11 @@ import com.belfoapps.anonymousmessaging.di.components.DaggerMVPComponent;
 import com.belfoapps.anonymousmessaging.di.components.MVPComponent;
 import com.belfoapps.anonymousmessaging.di.modules.ApplicationModule;
 import com.belfoapps.anonymousmessaging.di.modules.MVPModule;
-import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
+import com.belfoapps.anonymousmessaging.presenters.AuthPresenter;
 import com.belfoapps.anonymousmessaging.ui.adapters.AuthPagerAdapter;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.LoginFragment;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.RegisterFragment;
 import com.belfoapps.anonymousmessaging.utils.Config;
-import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -44,7 +43,7 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
     /**************************************** Declarations ****************************************/
     private MVPComponent mvpComponent;
     @Inject
-    AuthenticationPresenter mPresenter;
+    AuthPresenter mPresenter;
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
     private AuthPagerAdapter mAdapter;
@@ -234,6 +233,18 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
                 }
                 break;
         }
+    }
+
+    @Override
+    public void showLoading(boolean login) {
+        if (login) loginFragment.showLoading();
+        else registerFragment.showLoading();
+    }
+
+    @Override
+    public void hideLoading(boolean login) {
+        if (login) loginFragment.hideLoading();
+        else registerFragment.hideLoading();
     }
 
     @Override

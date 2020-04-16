@@ -1,23 +1,17 @@
 package com.belfoapps.anonymousmessaging.ui.views.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.belfoapps.anonymousmessaging.R;
-import com.belfoapps.anonymousmessaging.presenters.AuthenticationPresenter;
+import com.belfoapps.anonymousmessaging.presenters.AuthPresenter;
 import com.belfoapps.anonymousmessaging.ui.views.activities.AuthActivity;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
 import butterknife.BindView;
@@ -27,7 +21,7 @@ import butterknife.OnClick;
 public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFragment";
     /**************************************** Declarations ****************************************/
-    private AuthenticationPresenter mPresenter;
+    private AuthPresenter mPresenter;
     private AuthActivity mActivity;
 
     /**************************************** View Declarations ***********************************/
@@ -35,10 +29,14 @@ public class LoginFragment extends Fragment {
     TextInputLayout email;
     @BindView(R.id.password)
     TextInputLayout password;
+    @BindView(R.id.progress_login)
+    ProgressBar loading;
+    @BindView(R.id.login)
+    Button login;
 
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.login)
-    public void login() {
+    public void login(View v) {
         mPresenter.singInUser(email.getEditText().getText().toString(), password.getEditText().getText().toString());
     }
 
@@ -47,7 +45,7 @@ public class LoginFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public LoginFragment(AuthenticationPresenter mPresenter, AuthActivity mActivity) {
+    public LoginFragment(AuthPresenter mPresenter, AuthActivity mActivity) {
         this.mPresenter = mPresenter;
         this.mActivity = mActivity;
     }
@@ -73,5 +71,16 @@ public class LoginFragment extends Fragment {
 
     public void setEmptyPasswordError() {
         password.setError("This Shouldn't Be Empty");
+    }
+
+    public void showLoading() {
+        login.setText("");
+        loading.setVisibility(View.VISIBLE);
+        loading.bringToFront();
+    }
+
+    public void hideLoading() {
+        login.setText("Login");
+        loading.setVisibility(View.GONE);
     }
 }

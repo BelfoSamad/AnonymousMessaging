@@ -1,7 +1,5 @@
 package com.belfoapps.anonymousmessaging.contracts;
 
-import androidx.fragment.app.Fragment;
-
 import com.belfoapps.anonymousmessaging.base.BasePresenter;
 import com.belfoapps.anonymousmessaging.base.BaseView;
 import com.facebook.AccessToken;
@@ -28,10 +26,6 @@ public interface AuthenticationContract {
 
         void registerUser(String username, String email, String password, String confirm_password);
 
-        //void registerWithGoogle();
-
-        void registerWithFacebook();
-
         boolean emailNotValid(String email);
 
         boolean validatePassword(String password, String password_confirm);
@@ -52,6 +46,10 @@ public interface AuthenticationContract {
         void showErrorEmail(String fragment, String type);
 
         void showErrorPassword(String fragment, String type);
+
+        void showLoading(boolean login);
+
+        void hideLoading(boolean login);
 
         void goToMessages();
 

@@ -3,10 +3,12 @@ package com.belfoapps.anonymousmessaging.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.belfoapps.anonymousmessaging.R;
@@ -42,7 +44,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.ViewHolder holder, int position) {
         holder.message.setText(mMessages.get(position).getMessage());
-        holder.delete.setOnClickListener(v -> mPresenter.deleteMessage(position));
+        holder.delete.setOnClickListener(v -> {
+            mPresenter.deleteMessage(position);
+            holder.container.startAnimation(AnimationUtils.loadAnimation(mView, R.anim.slide));
+            holder.container.setVisibility(View.GONE);
+        });
         if (mMessages.get(position).isLiked())
             holder.like.setImageResource(R.drawable.liked);
         else holder.like.setImageResource(R.drawable.unliked);
@@ -77,12 +83,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        ConstraintLayout container;
         TextView message;
         ImageButton like;
         ImageButton delete;
 
         ViewHolder(View v) {
             super(v);
+            container = v.findViewById(R.id.message_container);
             message = v.findViewById(R.id.message);
             like = v.findViewById(R.id.like);
             delete = v.findViewById(R.id.delete);

@@ -90,13 +90,13 @@ public class MessagesPresenter implements MessagesContract.Presenter {
         UploadTask uploadTask = riversRef.putFile(image_uri);
 
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-                    storageRef.child("images/" + mUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            mView.setProfilePicture(uri);
-                        }
-                    });
-                })
+            storageRef.child("images/" + mUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    mView.setProfilePicture(uri);
+                }
+            });
+        })
                 .addOnFailureListener(exception -> Toast.makeText(mView, "Couldn't Update Profile Picture", Toast.LENGTH_SHORT).show());
     }
 

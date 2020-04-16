@@ -51,6 +51,10 @@ public interface MessagesContract {
         void showLogoutPopup();
 
         void hideLogoutPopup();
+
+        void showLogoutLoading();
+
+        void hideLogoutLoading();
     }
 
 }

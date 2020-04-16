@@ -35,18 +35,31 @@
 
     <Button
         android:id="@+id/logout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/logout_button"
-        android:paddingStart="32dp"
-        android:paddingEnd="32dp"
+        android:padding="16dp"
         android:text="Logout"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/popup_logout_kicker" />
+
+    <ProgressBar
+        android:id="@+id/progress_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/logout"
+        app:layout_constraintEnd_toEndOf="@id/logout"
+        app:layout_constraintStart_toStartOf="@id/logout"
+        app:layout_constraintTop_toTopOf="@id/logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

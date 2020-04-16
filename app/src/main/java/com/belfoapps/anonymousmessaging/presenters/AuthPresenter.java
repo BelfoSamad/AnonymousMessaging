@@ -28,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthenticationPresenter implements AuthenticationContract.Presenter {
+public class AuthPresenter implements AuthenticationContract.Presenter {
     private static final String TAG = "AuthenticationPresenter";
     /***************************************** Declarations ***************************************/
     private AuthActivity mView;
@@ -38,7 +38,7 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
     private CallbackManager mCallbackManager;
 
     /***************************************** Constructor ****************************************/
-    public AuthenticationPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb) {
+    public AuthPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb) {
         this.mAuth = mAuth;
         this.mDb = mDb;
     }
@@ -91,17 +91,13 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
             @Override
             public void onCancel() {
                 Log.d(TAG, "facebook:onCancel");
-                // [START_EXCLUDE]
                 Toast.makeText(mView, "Couldn't Login With Facebook", Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
-                // [START_EXCLUDE]
-                Toast.makeText(mView, "Couldn't Login With Facebook: " + error, Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
+                Toast.makeText(mView, "Failed Login\n" + error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -121,21 +117,25 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
             return;
         }
 
+        mView.showLoading(true);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+                    mView.hideLoading(true);
                     if (task.isSuccessful()) {
                         mView.goToMessages();
                     } else {
-                        Log.d(TAG, "onComplete: Failed To Signin");
+                        Toast.makeText(mView, "Failed Login\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     @Override
     public void signInWithGoogle(GoogleSignInAccount account) {
+        mView.showLoading(true);
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(mView, task -> {
+                    mView.hideLoading(true);
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
@@ -156,7 +156,7 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(mView, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mView, "Login Failed\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -164,9 +164,11 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
     @Override
     public void signInWithFacebook(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
+        mView.showLoading(true);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(mView, task -> {
+                    mView.hideLoading(true);
                     if (task.isSuccessful()) {
                         if (task.getResult().getAdditionalUserInfo().isNewUser()) {
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -183,7 +185,7 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
                         }
                         mView.goToMessages();
                     } else {
-                        Toast.makeText(mView, "Authentication failed.",
+                        Toast.makeText(mView, "Login Failed\n" + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -207,11 +209,15 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
             return;
         }
 
-        if (username.isEmpty())
+        if (username.isEmpty()) {
             mView.showErrorUsername();
+            return;
+        }
 
+        mView.showLoading(true);
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+                    mView.hideLoading(false);
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -237,14 +243,9 @@ public class AuthenticationPresenter implements AuthenticationContract.Presenter
 
                         mView.goToMessages();
                     } else {
-                        Log.d(TAG, "onComplete: Failed To Signup");
+                        Toast.makeText(mView, "Registration Failed\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    @Override
-    public void registerWithFacebook() {
-
     }
 
     @Override
