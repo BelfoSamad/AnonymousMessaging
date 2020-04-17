@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/activity_background"
     tools:context=".ui.views.fragments.RegisterFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,10 +17,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="16dp"
-            android:text="Register"
-            android:textColor="@android:color/black"
+            android:text="@string/register"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="24sp"
             android:textStyle="bold"
+            app:hintEnabled="false"
             app:layout_constraintBottom_toTopOf="@id/register_info_container"
             app:layout_constraintStart_toStartOf="@id/register_info_container" />
 
@@ -30,7 +32,8 @@
             app:layout_constraintBottom_toTopOf="@id/register"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.63">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username"
@@ -39,17 +42,20 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
-                android:hint="Username"
+                android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/colorAccent"
+                app:hintEnabled="false"
                 app:startIconDrawable="@drawable/username"
                 app:startIconTint="@color/colorAccent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null" />
+                    android:background="@null"
+                    android:hint="@string/username"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,10 +68,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
-                android:hint="Email"
+                android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/colorAccent"
+                app:hintEnabled="false"
                 app:startIconDrawable="@drawable/email"
                 app:startIconTint="@color/colorAccent">
 
@@ -73,7 +80,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:inputType="textPassword" />
+                    android:hint="@string/email"
+                    android:inputType="textPassword"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,10 +95,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
-                android:hint="Password"
+                android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/colorAccent"
+                app:hintEnabled="false"
                 app:startIconDrawable="@drawable/password"
                 app:startIconTint="@color/colorAccent">
 
@@ -97,7 +107,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:inputType="textPassword" />
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,10 +122,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
-                android:hint="Confirm Password"
+                android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/colorAccent"
+                app:hintEnabled="false"
                 app:startIconDrawable="@drawable/password"
                 app:startIconTint="@color/colorAccent">
 
@@ -121,7 +134,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:inputType="textPassword" />
+                    android:hint="@string/confirm_password"
+                    android:inputType="textPassword"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,19 +152,21 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/login_register_btn"
-            android:padding="16dp"
-            android:text="Register"
-            android:textColor="@color/colorAccent"
+            android:text="@string/register"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ProgressBar
             android:id="@+id/progress_register"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:elevation="5dp"
+            android:indeterminateTint="@color/white"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/register"
             app:layout_constraintEnd_toEndOf="@id/register"

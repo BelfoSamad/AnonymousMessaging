@@ -43,10 +43,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.ViewHolder holder, int position) {
+        if (mView.getResources().getBoolean(R.bool.is_right_to_left))
+            holder.message.setBackground(mView.getResources().getDrawable(R.drawable.message_background_rtl));
+        else
+            holder.message.setBackground(mView.getResources().getDrawable(R.drawable.message_background_rtl));
+
         holder.message.setText(mMessages.get(position).getMessage());
         holder.delete.setOnClickListener(v -> {
             mPresenter.deleteMessage(position);
-            holder.container.startAnimation(AnimationUtils.loadAnimation(mView, R.anim.slide));
+            if (mView.getResources().getBoolean(R.bool.is_right_to_left))
+                holder.container.startAnimation(AnimationUtils.loadAnimation(mView, R.anim.slide_rtl));
+            else
+                holder.container.startAnimation(AnimationUtils.loadAnimation(mView, R.anim.slide_ltr));
             holder.container.setVisibility(View.GONE);
         });
         if (mMessages.get(position).isLiked())

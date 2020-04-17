@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/activity_background"
     tools:context=".ui.views.fragments.LoginFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,8 +28,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="16dp"
-            android:text="Login"
-            android:textColor="@android:color/black"
+            android:text="@string/login"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/login_info_container"
@@ -41,7 +42,8 @@
             app:layout_constraintBottom_toTopOf="@id/login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/logo">
+            app:layout_constraintTop_toBottomOf="@id/logo"
+            app:layout_constraintVertical_bias="0.6">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email"
@@ -49,18 +51,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
+                android:paddingBottom="8dp"
                 android:background="@drawable/input_background"
-                android:hint="Email"
                 android:textAlignment="center"
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/colorAccent"
+                app:hintEnabled="false"
                 app:startIconDrawable="@drawable/email"
                 app:startIconTint="@color/colorAccent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null" />
+                    android:background="@null"
+                    android:hint="@string/email"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,11 +77,13 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
+                android:paddingBottom="8dp"
                 android:background="@drawable/input_background"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:textAlignment="center"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/colorAccent"
+                app:hintEnabled="false"
                 app:startIconDrawable="@drawable/password"
                 app:startIconTint="@color/colorAccent">
 
@@ -84,7 +91,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:inputType="textPassword" />
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:textAlignment="viewStart" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,19 +108,21 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/login_register_btn"
-            android:padding="16dp"
-            android:text="Login"
-            android:textColor="@color/colorAccent"
+            android:text="@string/login"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <ProgressBar
             android:id="@+id/progress_login"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:elevation="5dp"
+            android:indeterminateTint="@color/white"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/login"
             app:layout_constraintEnd_toEndOf="@id/login"

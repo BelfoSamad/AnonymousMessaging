@@ -8,22 +8,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.belfoapps.anonymousmessaging.R;
-import com.belfoapps.anonymousmessaging.utils.Config;
 
 import java.util.ArrayList;
 
-public class AuthPagerAdapter extends FragmentPagerAdapter {
+public class AuthPagerAdapter extends FragmentStateAdapter {
     /*************************************** Declarations *****************************************/
     private ArrayList<Fragment> fragments;
     private Context context;
 
     /*************************************** Constructor ******************************************/
-    public AuthPagerAdapter(@NonNull FragmentManager fm, ArrayList<Fragment> fragments, Context context) {
-        super(fm);
+    public AuthPagerAdapter(@NonNull FragmentActivity fragmentActivity, ArrayList<Fragment> fragments, Context context) {
+        super(fragmentActivity);
         this.fragments = fragments;
         this.context = context;
     }
@@ -31,19 +30,19 @@ public class AuthPagerAdapter extends FragmentPagerAdapter {
     /*************************************** Methods **********************************************/
     @NonNull
     @Override
-    public Fragment getItem(int position) {
+    public Fragment createFragment(int position) {
         return fragments.get(position);
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return fragments.size();
     }
 
     public View getTabView(int position) {
         @SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.custom_tab, null);
         TextView tv = view.findViewById(R.id.tab_title);
-        tv.setText(Config.tabTitles[position]);
+        tv.setText(context.getResources().getStringArray(R.array.tab_titles)[position]);
         return view;
     }
 }

@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/'}
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.4'
+    }
+}
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+
+repositories {
+    maven { url 'https://maven.google.com' }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
@@ -18,6 +32,11 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                onesignal_app_id: 'f73ccdc1-2dd2-42cf-bca5-cf4790cf51ae',
+                onesignal_google_project_number: 'REMOTE'
+        ]
     }
 
     buildTypes {
@@ -51,9 +70,19 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.2'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.5'
+
+    //One Signal
+    implementation 'com.onesignal:OneSignal:3.13.0'
 
     //Google
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
+
+    //Admob
+    implementation 'com.google.android.gms:play-services-ads:19.0.1'
+
+    //Consent "GDPR"
+    implementation 'com.google.android.ads.consent:consent-library:1.0.8'
 
     //Facebook
     implementation 'com.facebook.android:facebook-login:5.15.3'

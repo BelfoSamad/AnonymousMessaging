@@ -8,9 +8,13 @@ import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
-public interface AuthenticationContract {
+public interface AuthContract {
 
     interface Presenter extends BasePresenter<View> {
+
+        boolean isDarkModeEnabled();
+
+        void checkGDPRConsent();
 
         void checkUserConnected();
 

@@ -5,12 +5,17 @@ import android.net.Uri;
 import com.belfoapps.anonymousmessaging.base.BasePresenter;
 import com.belfoapps.anonymousmessaging.base.BaseView;
 import com.belfoapps.anonymousmessaging.pojo.Message;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
 public interface MessagesContract {
 
     interface Presenter extends BasePresenter<View> {
+
+        boolean isDarkModeEnabled();
+
+        void setDrkModeEnabled(boolean isChecked);
 
         void setUserInfo();
 
@@ -26,11 +31,15 @@ public interface MessagesContract {
 
         void likeMessage(Message message, boolean liked);
 
+        void loadAd(AdView ad);
+
         void logout();
 
     }
 
     interface View extends BaseView {
+
+        void initAdBanner();
 
         void setUserInfo(String username, String uid, Uri profile_picture_uri);
 

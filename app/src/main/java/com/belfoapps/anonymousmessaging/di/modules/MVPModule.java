@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.belfoapps.anonymousmessaging.di.annotations.ActivityContext;
+import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
 import com.belfoapps.anonymousmessaging.presenters.AuthPresenter;
 import com.belfoapps.anonymousmessaging.presenters.MessagesPresenter;
 import com.belfoapps.anonymousmessaging.presenters.SendMessagePresenter;
+import com.belfoapps.anonymousmessaging.utils.GDPR;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -42,20 +44,22 @@ public class MVPModule {
 
     @Provides
     @Singleton
-    AuthPresenter providesAuthPresenter(FirebaseAuth authInstance, FirebaseFirestore mDb) {
-        return new AuthPresenter(authInstance, mDb);
+    AuthPresenter providesAuthPresenter(FirebaseAuth authInstance, FirebaseFirestore mDb, GDPR gdpr,
+                                        SharedPreferencesHelper mSharedPrefs) {
+        return new AuthPresenter(authInstance, mDb, gdpr, mSharedPrefs);
     }
 
     @Provides
     @Singleton
-    MessagesPresenter providesMessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb, FirebaseStorage mStorage) {
-        return new MessagesPresenter(mAuth, mDb, mStorage);
+    MessagesPresenter providesMessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb, FirebaseStorage mStorage,
+                                                SharedPreferencesHelper mSharedPrefs, GDPR gdpr) {
+        return new MessagesPresenter(mAuth, mDb, mStorage, mSharedPrefs, gdpr);
     }
 
     @Provides
     @Singleton
-    SendMessagePresenter providesSendMessagePresenter(FirebaseFirestore mDb) {
-        return new SendMessagePresenter(mDb);
+    SendMessagePresenter providesSendMessagePresenter(FirebaseFirestore mDb, SharedPreferencesHelper mSharedPrefs, GDPR gdpr) {
+        return new SendMessagePresenter(mDb, mSharedPrefs, gdpr);
     }
 
 }

@@ -3,5 +3,15 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
     <color name="lightBackgroundColor">#f6fafd</color>
+    <color name="darkBackgroundColor">#000000</color>
+    <color name="lightCardColor">#eef3f9</color>
+    <color name="darkCardColor">#1c1c1c</color>
+    <color name="message_color">#48baff</color>
+
+    <color name="red">#FF0007</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

@@ -9,9 +9,12 @@ import android.widget.Toast;
 
 import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.contracts.MessagesContract;
+import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
 import com.belfoapps.anonymousmessaging.pojo.Message;
 import com.belfoapps.anonymousmessaging.ui.views.activities.MessagesActivity;
+import com.belfoapps.anonymousmessaging.utils.GDPR;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,16 +35,22 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDb;
     private FirebaseUser mUser;
+    private SharedPreferencesHelper mSharedPrefs;
+    private GDPR gdpr;
     private FirebaseStorage mStorage;
     private ArrayList<Message> messages;
     private StorageReference storageRef;
 
     /***************************************** Constructor ****************************************/
-    public MessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb, FirebaseStorage mStorage) {
+    public MessagesPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb, FirebaseStorage mStorage,
+                             SharedPreferencesHelper mSharedPrefs, GDPR gdpr) {
         this.mAuth = mAuth;
         this.mDb = mDb;
         storageRef = mStorage.getReference();
         mUser = mAuth.getCurrentUser();
+
+        this.mSharedPrefs = mSharedPrefs;
+        this.gdpr = gdpr;
     }
 
     /***************************************** Essential Methods **********************************/
@@ -58,6 +67,16 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     @Override
     public boolean isAttached() {
         return !(mView == null);
+    }
+
+    @Override
+    public boolean isDarkModeEnabled() {
+        return mSharedPrefs.isDarkModeEnabled();
+    }
+
+    @Override
+    public void setDrkModeEnabled(boolean isChecked) {
+        mSharedPrefs.setDarkModeEnable(isChecked);
     }
 
     /***************************************** Methods ********************************************/
@@ -97,7 +116,7 @@ public class MessagesPresenter implements MessagesContract.Presenter {
                 }
             });
         })
-                .addOnFailureListener(exception -> Toast.makeText(mView, "Couldn't Update Profile Picture", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(exception -> Toast.makeText(mView, mView.getResources().getString(R.string.update_profile_picture_error), Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -169,7 +188,7 @@ public class MessagesPresenter implements MessagesContract.Presenter {
                         mView.showNoMessages();
                     else mView.showMessages();
                 })
-                .addOnFailureListener(e -> Toast.makeText(mView, "Couldn't delete message.", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(mView, mView.getResources().getString(R.string.delete_message_error), Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -184,6 +203,15 @@ public class MessagesPresenter implements MessagesContract.Presenter {
                 Log.d(TAG, "onComplete: Updating Successful");
             } else Log.d(TAG, "onComplete: " + task.getException());
         });
+    }
+
+    @Override
+    public void loadAd(AdView ad) {
+        if (mSharedPrefs.isAdPersonalized()) {
+            gdpr.showPersonalizedAdBanner(ad);
+        } else {
+            gdpr.showNonPersonalizedAdBanner(ad);
+        }
     }
 
     @Override

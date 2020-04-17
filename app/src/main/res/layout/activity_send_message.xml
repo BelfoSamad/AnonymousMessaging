@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightBackgroundColor"
+    android:background="@drawable/activity_background"
     tools:context=".ui.views.activities.SendMessageActivity">
 
     <ImageButton
@@ -43,9 +43,9 @@
             android:id="@+id/message_for"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Message For ..."
+            tools:text="Message For ..."
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -57,12 +57,12 @@
             android:layout_below="@id/message_for"
             android:layout_marginTop="16dp"
             android:background="@drawable/send_message_background"
-            android:hint="Message"
+            android:hint="@string/message_hint"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primaryTextColor"
             app:endIconMode="clear_text"
-            app:endIconTint="@android:color/black"
-            app:hintTextColor="@android:color/black">
+            app:endIconTint="?attr/iconColor"
+            app:hintTextColor="?attr/iconColor">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
             android:background="@drawable/send_btn"
-            android:text="Send"
+            android:text="@string/send"
             android:textColor="@color/colorAccent" />
     </RelativeLayout>
 
@@ -107,14 +107,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo" />
 
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView_send_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/ADMOB_BANNER_ID"
+        ads:layout_constraintBottom_toTopOf="@id/progress_send_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/progress_send_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="32dp"
-        android:indeterminate="true"/>
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightBackgroundColor"
+    android:background="@drawable/activity_background"
     tools:context=".ui.views.activities.MessagesActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="@android:color/white"
+            app:cardBackgroundColor="?attr/cardColor"
             app:cardCornerRadius="32dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Update"
+                    android:text="@string/update_profile_picture"
                     android:textColor="@color/colorAccent"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="@id/profile_picture"
@@ -71,8 +71,8 @@
                         android:layout_gravity="center_vertical"
                         android:ellipsize="end"
                         android:lines="1"
-                        android:text="Itsyaboisamad"
-                        android:textColor="@android:color/black"
+                        tools:text="Itsyaboisamad"
+                        android:textColor="?attr/primaryTextColor"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -88,8 +88,8 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:lines="1"
-                            android:text="16DlJ4Czo6B9d2"
-                            android:textColor="@android:color/black"
+                            tools:text="16DlJ4Czo6B9d2"
+                            android:textColor="?attr/primaryTextColor"
                             android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/copy_uid"
@@ -121,12 +121,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
             android:layout_marginTop="24dp"
-            android:text="Messages"
-            android:textColor="@android:color/black"
+            android:text="@string/messages"
+            android:textColor="?attr/primaryTextColor"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/info_container" />
+
+        <ImageButton
+            android:id="@+id/dark_mode"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:src="@drawable/dark_mode"
+            app:layout_constraintBottom_toBottomOf="@id/messages_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/messages_text" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
@@ -159,7 +170,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias=".4" />
 
                 <ImageView
                     android:id="@+id/no_messages"
@@ -170,12 +182,23 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias=".4" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView_messages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/ADMOB_BANNER_ID"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

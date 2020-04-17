@@ -5,8 +5,10 @@ import android.util.Patterns;
 import android.widget.Toast;
 
 import com.belfoapps.anonymousmessaging.R;
-import com.belfoapps.anonymousmessaging.contracts.AuthenticationContract;
+import com.belfoapps.anonymousmessaging.contracts.AuthContract;
+import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
 import com.belfoapps.anonymousmessaging.ui.views.activities.AuthActivity;
+import com.belfoapps.anonymousmessaging.utils.GDPR;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -28,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthPresenter implements AuthenticationContract.Presenter {
+public class AuthPresenter implements AuthContract.Presenter {
     private static final String TAG = "AuthenticationPresenter";
     /***************************************** Declarations ***************************************/
     private AuthActivity mView;
@@ -36,16 +38,20 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDb;
     private CallbackManager mCallbackManager;
+    private SharedPreferencesHelper mSharedPrefs;
+    private GDPR gdpr;
 
     /***************************************** Constructor ****************************************/
-    public AuthPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb) {
+    public AuthPresenter(FirebaseAuth mAuth, FirebaseFirestore mDb, GDPR gdpr, SharedPreferencesHelper mSharedPrefs) {
         this.mAuth = mAuth;
         this.mDb = mDb;
+        this.gdpr = gdpr;
+        this.mSharedPrefs = mSharedPrefs;
     }
 
     /***************************************** Essential Methods **********************************/
     @Override
-    public void attach(AuthenticationContract.View view) {
+    public void attach(AuthContract.View view) {
         mView = (AuthActivity) view;
     }
 
@@ -61,6 +67,18 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
 
     /***************************************** Methods ********************************************/
     @Override
+    public boolean isDarkModeEnabled() {
+        return mSharedPrefs.isDarkModeEnabled();
+    }
+
+    @Override
+    public void checkGDPRConsent() {
+        if (mView.getResources().getBoolean(R.bool.GDPR_Enabled)) {
+            gdpr.checkForConsent();
+        }
+    }
+
+    @Override
     public void checkUserConnected() {
         if (mAuth.getCurrentUser() != null)
             mView.goToMessages();
@@ -70,7 +88,7 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
     @Override
     public void configGoogleSignIn() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(mView.getString(R.string.default_web_client_id))
+                .requestIdToken(mView.getResources().getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -91,19 +109,20 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
             @Override
             public void onCancel() {
                 Log.d(TAG, "facebook:onCancel");
-                Toast.makeText(mView, "Couldn't Login With Facebook", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mView, mView.getResources().getString(R.string.facebook_login_error), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
-                Toast.makeText(mView, "Failed Login\n" + error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mView, mView.getResources().getString(R.string.login_failed) + error, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public void singInUser(String email, String password) {
+        //Validate Data
         if (email.isEmpty()) {
             mView.showErrorEmail("Login", "Empty");
             return;
@@ -111,7 +130,6 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
             mView.showErrorEmail("Login", "Invalid");
             return;
         }
-
         if (password.isEmpty()) {
             mView.showErrorPassword("Login", "Empty");
             return;
@@ -124,7 +142,7 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
                     if (task.isSuccessful()) {
                         mView.goToMessages();
                     } else {
-                        Toast.makeText(mView, "Failed Login\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mView, mView.getResources().getString(R.string.login_failed) + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -156,14 +174,13 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(mView, "Login Failed\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mView, mView.getResources().getString(R.string.login_failed) + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     @Override
     public void signInWithFacebook(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
         mView.showLoading(true);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -185,7 +202,7 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
                         }
                         mView.goToMessages();
                     } else {
-                        Toast.makeText(mView, "Login Failed\n" + task.getException().getMessage(),
+                        Toast.makeText(mView, mView.getResources().getString(R.string.login_failed) + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -243,7 +260,7 @@ public class AuthPresenter implements AuthenticationContract.Presenter {
 
                         mView.goToMessages();
                     } else {
-                        Toast.makeText(mView, "Registration Failed\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mView, mView.getResources().getString(R.string.register_failed) + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

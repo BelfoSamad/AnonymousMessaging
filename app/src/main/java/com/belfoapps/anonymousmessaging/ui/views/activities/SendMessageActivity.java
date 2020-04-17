@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.contracts.SendMessageContract;
@@ -22,6 +23,7 @@ import com.belfoapps.anonymousmessaging.di.components.MVPComponent;
 import com.belfoapps.anonymousmessaging.di.modules.ApplicationModule;
 import com.belfoapps.anonymousmessaging.di.modules.MVPModule;
 import com.belfoapps.anonymousmessaging.presenters.SendMessagePresenter;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.textfield.TextInputLayout;
 
 import javax.inject.Inject;
@@ -29,6 +31,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.view.View.GONE;
 
 public class SendMessageActivity extends AppCompatActivity implements SendMessageContract.View {
     private static final String TAG = "SendMessageActivity";
@@ -51,29 +55,42 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     @BindView(R.id.progress_send_message)
     ProgressBar progress;
 
+    @BindView(R.id.adView_send_message)
+    AdView ad;
+
     /**************************************** Click Listeners *************************************/
     @OnClick(R.id.back)
     public void goBack() {
-        startActivity(new Intent(SendMessageActivity.this, AuthActivity.class));
+        onBackPressed();
     }
 
     @OnClick(R.id.send)
     public void sendMessage() {
         mPresenter.sendMessage(getIntent().getData().getQueryParameter("uid"), message.getEditText().getText().toString());
         message.getEditText().setText("");
-        Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.message_sent), Toast.LENGTH_SHORT).show();
     }
 
     /**************************************** Essential Methods ***********************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_message);
 
         //Initialize Dagger For Application
         mvpComponent = getComponent();
         //Inject the Component Here
         mvpComponent.inject(this);
+
+        //Enable/Disable Dark Mode
+        if (mPresenter.isDarkModeEnabled())
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        //Set Dark Mode
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            setTheme(R.style.AppDarkTheme);
+        else setTheme(R.style.AppLightTheme);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_send_message);
 
         //Set ButterKnife
         ButterKnife.bind(this);
@@ -85,6 +102,32 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         Uri data = intent.getData();
 
         mPresenter.checkUserExist(data.getQueryParameter("uid"));
+
+        //Init Ad Banner
+        initAdBanner();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ad.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ad.destroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ad.resume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(SendMessageActivity.this, AuthActivity.class));
     }
 
     @Override
@@ -101,22 +144,31 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
 
     /**************************************** Methods *********************************************/
     @Override
+    public void initAdBanner() {
+        if (getResources().getBoolean(R.bool.AD_BANNER_Enabled)) {
+            mPresenter.loadAd(ad);
+        } else {
+            ad.setVisibility(GONE);
+        }
+    }
+
+    @Override
     public void showUserNotFound() {
 
         //Progress
-        progress.setVisibility(View.GONE);
+        progress.setVisibility(GONE);
 
         //show UI
         noUser.setVisibility(View.VISIBLE);
-        noNetwork.setVisibility(View.GONE);
-        mContainer.setVisibility(View.GONE);
+        noNetwork.setVisibility(GONE);
+        mContainer.setVisibility(GONE);
     }
 
     @Override
     public void showSendMessage(String username) {
 
         //Progress
-        progress.setVisibility(View.GONE);
+        progress.setVisibility(GONE);
 
         //Set Edit Text
         message.getEditText().setSingleLine(false);
@@ -127,11 +179,11 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
         message.getEditText().setVerticalScrollBarEnabled(true);
         message.getEditText().setMovementMethod(ScrollingMovementMethod.getInstance());
         message.getEditText().setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
-        message_for.setText("Message For " + username);
+        message_for.setText(getResources().getString(R.string.message_for) + username);
 
         //show UI
-        noUser.setVisibility(View.GONE);
-        noNetwork.setVisibility(View.GONE);
+        noUser.setVisibility(GONE);
+        noNetwork.setVisibility(GONE);
         mContainer.setVisibility(View.VISIBLE);
     }
 
@@ -139,11 +191,11 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
     public void showNoNetwork() {
 
         //Progress
-        progress.setVisibility(View.GONE);
+        progress.setVisibility(GONE);
 
         //show UI
-        noUser.setVisibility(View.GONE);
+        noUser.setVisibility(GONE);
         noNetwork.setVisibility(View.VISIBLE);
-        mContainer.setVisibility(View.GONE);
+        mContainer.setVisibility(GONE);
     }
 }

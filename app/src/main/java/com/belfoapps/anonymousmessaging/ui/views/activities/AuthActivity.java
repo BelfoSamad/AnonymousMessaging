@@ -1,17 +1,22 @@
 package com.belfoapps.anonymousmessaging.ui.views.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.belfoapps.anonymousmessaging.R;
-import com.belfoapps.anonymousmessaging.contracts.AuthenticationContract;
+import com.belfoapps.anonymousmessaging.contracts.AuthContract;
 import com.belfoapps.anonymousmessaging.di.components.DaggerMVPComponent;
 import com.belfoapps.anonymousmessaging.di.components.MVPComponent;
 import com.belfoapps.anonymousmessaging.di.modules.ApplicationModule;
@@ -20,13 +25,13 @@ import com.belfoapps.anonymousmessaging.presenters.AuthPresenter;
 import com.belfoapps.anonymousmessaging.ui.adapters.AuthPagerAdapter;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.LoginFragment;
 import com.belfoapps.anonymousmessaging.ui.views.fragments.RegisterFragment;
-import com.belfoapps.anonymousmessaging.utils.Config;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AuthActivity extends AppCompatActivity implements AuthenticationContract.View {
+public class AuthActivity extends AppCompatActivity implements AuthContract.View {
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
     /**************************************** Declarations ****************************************/
@@ -47,10 +52,11 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
     private AuthPagerAdapter mAdapter;
+    private boolean doubleBackToExitPressedOnce;
 
     /**************************************** View Declarations ***********************************/
     @BindView(R.id.viewpager)
-    ViewPager mViewPager;
+    ViewPager2 mViewPager;
     @BindView(R.id.tablayout)
     TabLayout mTab;
     @BindView(R.id.facebook_login_button)
@@ -71,19 +77,31 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
     /**************************************** Essential Methods ***********************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth);
-
         //Initialize Dagger For Application
         mvpComponent = getComponent();
         //Inject the Component Here
         mvpComponent.inject(this);
+
+        //Enable/Disable Dark Mode
+        if (mPresenter.isDarkModeEnabled())
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        //Set Dark Mode
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+            setTheme(R.style.AppDarkTheme);
+        else setTheme(R.style.AppLightTheme);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_auth);
 
         //Set ButterKnife
         ButterKnife.bind(this);
 
         //Attach View To Presenter
         mPresenter.attach(this);
+
+        //Check GDPR
+        mPresenter.checkGDPRConsent();
 
         //setup Google Conf
         mPresenter.configGoogleSignIn();
@@ -108,6 +126,19 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
     protected void onStart() {
         super.onStart();
         mPresenter.checkUserConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finishAffinity();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, getResources().getString(R.string.exit_message), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 
     @Override
@@ -138,7 +169,7 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
         fragments.add(loginFragment);
         fragments.add(registerFragment);
 
-        mAdapter = new AuthPagerAdapter(getSupportFragmentManager(), fragments, AuthActivity.this);
+        mAdapter = new AuthPagerAdapter(this, fragments, AuthActivity.this);
         mViewPager.setAdapter(mAdapter);
 
         initTabLayout();
@@ -146,7 +177,9 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
 
     @Override
     public void initTabLayout() {
-        mTab.setupWithViewPager(mViewPager);
+        new TabLayoutMediator(mTab, mViewPager,
+                (tab, position) -> tab.setText("OBJECT " + (position + 1))
+        ).attach();
 
         // Iterate over all tabs and set the custom view
         for (int i = 0; i < mTab.getTabCount(); i++) {
@@ -177,7 +210,7 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
     public void enableTabAt(int x) {
         TabLayout.Tab tab = mTab.getTabAt(x);
 
-        for (int i = 0; i < Config.tabTitles.length; i++) {
+        for (int i = 0; i < getResources().getStringArray(R.array.tab_titles).length; i++) {
             if (i == x) {
                 assert tab != null;
                 Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tab_dot).setVisibility(View.VISIBLE);
@@ -255,5 +288,11 @@ public class AuthActivity extends AppCompatActivity implements AuthenticationCon
     @Override
     public void showErrorUsername() {
         registerFragment.setEmptyUsernameError();
+    }
+
+
+    public void hideSoftKeyboard(View view) {
+        InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mInputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 }

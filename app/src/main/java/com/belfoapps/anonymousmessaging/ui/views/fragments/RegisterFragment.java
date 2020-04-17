@@ -67,23 +67,23 @@ public class RegisterFragment extends Fragment {
     }
 
     public void setEmptyEmailError() {
-        email.setError("This Shouldn't Be Empty");
+        email.setError(getResources().getString(R.string.empty));
     }
 
     public void setInvalidEmailError() {
-        email.setError("Email is Invalid");
+        email.setError(getResources().getString(R.string.email_invalid));
     }
 
     public void setEmptyPasswordError() {
-        password.setError("This Shouldn't Be Empty");
+        password.setError(getResources().getString(R.string.empty));
     }
 
     public void setNotMatchingPasswordError() {
-        password_confirm.setError("Password should be matching");
+        password_confirm.setError(getResources().getString(R.string.password_matching_error));
     }
 
     public void setEmptyUsernameError() {
-        username.setError("This Shouldn't Be Empty");
+        username.setError(getResources().getString(R.string.empty));
     }
 
     public void showLoading() {
@@ -93,7 +93,7 @@ public class RegisterFragment extends Fragment {
     }
 
     public void hideLoading() {
-        register.setText("Register");
+        register.setText(getResources().getString(R.string.register));
         loading.setVisibility(View.GONE);
     }
 }

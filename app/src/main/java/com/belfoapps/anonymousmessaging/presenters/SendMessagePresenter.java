@@ -3,7 +3,10 @@ package com.belfoapps.anonymousmessaging.presenters;
 import android.util.Log;
 
 import com.belfoapps.anonymousmessaging.contracts.SendMessageContract;
+import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
 import com.belfoapps.anonymousmessaging.ui.views.activities.SendMessageActivity;
+import com.belfoapps.anonymousmessaging.utils.GDPR;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -15,10 +18,14 @@ public class SendMessagePresenter implements SendMessageContract.Presenter {
     /***************************************** Declarations ***************************************/
     private SendMessageActivity mView;
     private FirebaseFirestore mDb;
+    private SharedPreferencesHelper mSharedPrefs;
+    private GDPR gdpr;
 
     /***************************************** Constructor ****************************************/
-    public SendMessagePresenter(FirebaseFirestore mDb) {
+    public SendMessagePresenter(FirebaseFirestore mDb, SharedPreferencesHelper mSharedPrefs, GDPR gdpr) {
         this.mDb = mDb;
+        this.mSharedPrefs = mSharedPrefs;
+        this.gdpr = gdpr;
     }
 
     /***************************************** Essential Methods **********************************/
@@ -35,6 +42,11 @@ public class SendMessagePresenter implements SendMessageContract.Presenter {
     @Override
     public boolean isAttached() {
         return !(mView == null);
+    }
+
+    @Override
+    public boolean isDarkModeEnabled() {
+        return mSharedPrefs.isDarkModeEnabled();
     }
 
     /***************************************** Methods ********************************************/
@@ -79,5 +91,14 @@ public class SendMessagePresenter implements SendMessageContract.Presenter {
                 .addOnFailureListener(e -> {
                     Log.d(TAG, "sendMessage: Failed");
                 });
+    }
+
+    @Override
+    public void loadAd(AdView ad) {
+        if (mSharedPrefs.isAdPersonalized()) {
+            gdpr.showPersonalizedAdBanner(ad);
+        } else {
+            gdpr.showNonPersonalizedAdBanner(ad);
+        }
     }
 }

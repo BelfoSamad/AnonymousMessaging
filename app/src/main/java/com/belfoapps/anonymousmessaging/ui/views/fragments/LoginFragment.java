@@ -62,15 +62,15 @@ public class LoginFragment extends Fragment {
     }
 
     public void setEmptyEmailError() {
-        email.setError("This Shouldn't Be Empty");
+        email.setError(getResources().getString(R.string.email_empty));
     }
 
     public void setInvalidEmailError() {
-        email.setError("Email is Invalid");
+        email.setError(getResources().getString(R.string.email_invalid));
     }
 
     public void setEmptyPasswordError() {
-        password.setError("This Shouldn't Be Empty");
+        password.setError(getResources().getString(R.string.empty));
     }
 
     public void showLoading() {
@@ -80,7 +80,7 @@ public class LoginFragment extends Fragment {
     }
 
     public void hideLoading() {
-        login.setText("Login");
+        login.setText(getResources().getString(R.string.login));
         loading.setVisibility(View.GONE);
     }
 }

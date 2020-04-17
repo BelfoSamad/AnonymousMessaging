@@ -6,7 +6,8 @@ import android.content.SharedPreferences;
 
 import com.belfoapps.anonymousmessaging.di.annotations.ApplicationContext;
 import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
-import com.belfoapps.anonymousmessaging.utils.Config;
+import com.belfoapps.anonymousmessaging.utils.GDPR;
+import com.google.ads.consent.ConsentForm;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -17,15 +18,12 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-//import com.belfoapps.recipepro.utils.GDPR;
-//import com.google.ads.consent.ConsentForm;
-
 @Module
 public class ApplicationModule {
 
     //Declarations
     private final Application mApplication;
-    //private ConsentForm form;
+    private ConsentForm form;
 
     //Constructor
     public ApplicationModule(Application mApplication) {
@@ -71,12 +69,6 @@ public class ApplicationModule {
     /*
         Utils
      */
-    @Provides
-    @Singleton
-    Config providesConfig() {
-        SharedPreferences preferences = mApplication.getSharedPreferences("CONFIG", Context.MODE_PRIVATE);
-        return new Config(preferences);
-    }
 
     @Provides
     @Singleton
@@ -96,11 +88,9 @@ public class ApplicationModule {
         return FirebaseStorage.getInstance();
     }
 
-    /*
     @Provides
     @Singleton
-    GDPR providesGDPR(SharedPreferencesHelper sharedPreferencesHelper, Config config){
-        return new GDPR(sharedPreferencesHelper, form, mApplication, config);
+    GDPR providesGDPR(SharedPreferencesHelper sharedPreferencesHelper){
+        return new GDPR(sharedPreferencesHelper, form, mApplication);
     }
-     */
 }

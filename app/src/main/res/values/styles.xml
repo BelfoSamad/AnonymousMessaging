@@ -1,11 +1,35 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppLightTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppLightTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="primaryTextColor">@color/black</item>
+        <item name="backgroundColor">@color/lightBackgroundColor</item>
+        <item name="secondaryTextColor">@color/black</item>
+        <item name="iconColor">@color/black</item>
+        <item name="cardColor">@color/lightCardColor</item>
+    </style>
+
+    <style name="AppDarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="primaryTextColor">@color/white</item>
+        <item name="backgroundColor">@color/darkBackgroundColor</item>
+        <item name="secondaryTextColor">@color/white</item>
+        <item name="iconColor">@color/white</item>
+        <item name="cardColor">@color/darkCardColor</item>
     </style>
 
 </resources>

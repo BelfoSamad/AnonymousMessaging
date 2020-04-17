@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/activity_background"
     tools:context=".ui.views.activities.AuthActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
+        app:chainUseRtl="true"
         app:layout_constraintBottom_toTopOf="@id/or"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="OR"
+            android:text="@string/or"
             android:textColor="@android:color/darker_gray" />
 
         <View
@@ -82,7 +83,6 @@
                 android:id="@+id/facebook_login_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/facebook_login"
                 android:visibility="gone" />
 
             <ImageButton

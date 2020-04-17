@@ -1,9 +1,11 @@
 package com.belfoapps.anonymousmessaging.base;
 
 import androidx.multidex.MultiDexApplication;
+
 import com.belfoapps.anonymousmessaging.di.components.ApplicationComponent;
 import com.belfoapps.anonymousmessaging.di.components.DaggerApplicationComponent;
 import com.belfoapps.anonymousmessaging.di.modules.ApplicationModule;
+import com.onesignal.OneSignal;
 
 
 public class BaseApplication extends MultiDexApplication {
@@ -18,6 +20,12 @@ public class BaseApplication extends MultiDexApplication {
 
         //Inject the Component Here
         appComponent.inject(this);
+
+        //One Signal
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
     }
 
     public ApplicationComponent getComponent() {
