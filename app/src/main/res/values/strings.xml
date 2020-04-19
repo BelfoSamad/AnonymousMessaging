@@ -40,7 +40,7 @@
     <string name="delete_message_error">Couldn\'t delete message.</string>
     <string name="exit_message">Click twice to exist.</string>
     <string name="message_sent">Message Sent!</string>
-    <string name="message_for">\"Message For \"</string>
+    <string name="message_for">Message For </string>
     <string name="email_empty">This Shouldn\'t Be Empty</string>
     <string name="email_invalid">Email is Invalid</string>
     <string name="empty">This Shouldn\'t Be Empty</string>
