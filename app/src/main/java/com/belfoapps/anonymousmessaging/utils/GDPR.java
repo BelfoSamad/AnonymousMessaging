@@ -83,7 +83,7 @@ public class GDPR {
         Log.d(TAG, "requestConsent: Requesting Consent");
         URL privacyUrl = null;
         try {
-            privacyUrl = new URL("your privacy link");
+            privacyUrl = new URL(mContext.getResources().getString(R.string.privacy_url));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             // Handle error_image.

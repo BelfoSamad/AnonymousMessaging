@@ -8,6 +8,7 @@
     <string name="AD_BANNER_ID">ca-app-pub-3940256099942544/6300978111</string>
     <string name="INTERSTITIAL_AD_ID">ca-app-pub-3940256099942544/1033173712</string>
     <string name="PUBLISHER_ID">pub-4679171106713552</string>
+    <string name="privacy_url">www.privacy.com</string>
     <item name="GDPR_Enabled" type="bool">false</item>
     <item name="AD_BANNER_Enabled" type="bool">false</item>
     <item name="INTERSTITIAL_AD_Enabled" type="bool">false</item>
@@ -24,13 +25,11 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="logout">Logout</string>
-
     <!--- Messages -->
     <string name="update_profile_picture">Update</string>
     <string name="messages">Messages</string>
     <string name="message_hint">Message</string>
     <string name="send">Send</string>
-
     <!--- Others -->
     <string name="or">OR</string>
     <string name="facebook_login_error">Couldn\'t Login With Facebook</string>
