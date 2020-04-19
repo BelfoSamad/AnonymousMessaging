@@ -69,7 +69,8 @@ public class MessagesPresenter implements MessagesContract.Presenter {
         return !(mView == null);
     }
 
-    @Override
+    /***************************************** Methods ********************************************/
+        @Override
     public boolean isDarkModeEnabled() {
         return mSharedPrefs.isDarkModeEnabled();
     }
@@ -78,8 +79,7 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     public void setDrkModeEnabled(boolean isChecked) {
         mSharedPrefs.setDarkModeEnable(isChecked);
     }
-
-    /***************************************** Methods ********************************************/
+    
     @Override
     public void setUserInfo() {
         storageRef.child("images/" + mUser.getUid()).getDownloadUrl()
@@ -178,8 +178,9 @@ public class MessagesPresenter implements MessagesContract.Presenter {
         mDb.collection("messages").document(messages.get(position).getId())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    messages.remove(position);
 
+                    //Update Messages list
+                    messages.remove(position);
                     mView.updateRecyclerView(messages);
 
                     if (messages == null)
@@ -194,7 +195,6 @@ public class MessagesPresenter implements MessagesContract.Presenter {
     @Override
     public void likeMessage(Message message, boolean liked) {
         Map<String, Object> update = new HashMap<>();
-        Log.d(TAG, "likeMessage: " + liked);
         update.put("liked", liked);
         mDb.collection("messages")
                 .document(message.getId())

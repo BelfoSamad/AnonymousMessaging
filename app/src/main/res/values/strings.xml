@@ -5,10 +5,12 @@
     <string name="facebook_app_id">788594481548055</string>
     <string name="fb_login_protocol_scheme">fb788594481548055</string>
     <string name="APPLICATION_ID">ca-app-pub-2106508532272950~5778709900</string>
-    <string name="ADMOB_BANNER_ID">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="AD_BANNER_ID">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="INTERSTITIAL_AD_ID">ca-app-pub-3940256099942544/1033173712</string>
     <string name="PUBLISHER_ID">pub-4679171106713552</string>
-    <item name="GDPR_Enabled" type="bool">true</item>
-    <item name="AD_BANNER_Enabled" type="bool">true</item>
+    <item name="GDPR_Enabled" type="bool">false</item>
+    <item name="AD_BANNER_Enabled" type="bool">false</item>
+    <item name="INTERSTITIAL_AD_Enabled" type="bool">false</item>
     <string-array name="tab_titles">
         <item>Login</item>
         <item>Register</item>

@@ -1,12 +1,17 @@
 package com.belfoapps.anonymousmessaging.presenters;
 
+import android.content.Intent;
 import android.util.Log;
 
+import com.belfoapps.anonymousmessaging.R;
 import com.belfoapps.anonymousmessaging.contracts.SendMessageContract;
 import com.belfoapps.anonymousmessaging.models.SharedPreferencesHelper;
+import com.belfoapps.anonymousmessaging.ui.views.activities.AuthActivity;
 import com.belfoapps.anonymousmessaging.ui.views.activities.SendMessageActivity;
 import com.belfoapps.anonymousmessaging.utils.GDPR;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -20,6 +25,7 @@ public class SendMessagePresenter implements SendMessageContract.Presenter {
     private FirebaseFirestore mDb;
     private SharedPreferencesHelper mSharedPrefs;
     private GDPR gdpr;
+    private InterstitialAd mInterstitialAd;
 
     /***************************************** Constructor ****************************************/
     public SendMessagePresenter(FirebaseFirestore mDb, SharedPreferencesHelper mSharedPrefs, GDPR gdpr) {
@@ -100,5 +106,57 @@ public class SendMessagePresenter implements SendMessageContract.Presenter {
         } else {
             gdpr.showNonPersonalizedAdBanner(ad);
         }
+    }
+
+    @Override
+    public void loadInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(mView);
+        mInterstitialAd.setAdUnitId(mView.getResources().getString(R.string.INTERSTITIAL_AD_ID));
+
+        if (mView.getResources().getBoolean(R.bool.INTERSTITIAL_AD_Enabled)) {
+
+            if (mSharedPrefs.isAdPersonalized())
+                gdpr.loadPersonalizedInterstitialAd(mInterstitialAd);
+            else gdpr.loadNonPersonalizedInterstitialAd(mInterstitialAd);
+
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    //Ad Loaded
+                }
+
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    // Code to be executed when an ad request fails.
+                }
+
+                @Override
+                public void onAdOpened() {
+                    // Code to be executed when the ad is displayed.
+                }
+
+                @Override
+                public void onAdClicked() {
+                    // Code to be executed when the user clicks on an ad.
+                }
+
+                @Override
+                public void onAdLeftApplication() {
+                    // Code to be executed when the user has left the app.
+                }
+
+                @Override
+                public void onAdClosed() {
+                    mView.startActivity(new Intent(mView, AuthActivity.class));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void showInterstitialAd() {
+        if (mInterstitialAd.isLoaded())
+            mInterstitialAd.show();
+        else mView.startActivity(new Intent(mView, AuthActivity.class));
     }
 }

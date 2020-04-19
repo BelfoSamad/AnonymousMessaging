@@ -68,6 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
+                android:textColorHint="?attr/secondaryTextColor"
+                android:textColor="?attr/primaryTextColor"
                 android:inputType="textLongMessage"
                 android:paddingTop="8dp" />
 
@@ -113,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/ADMOB_BANNER_ID"
+        ads:adUnitId="@string/AD_BANNER_ID"
         ads:layout_constraintBottom_toTopOf="@id/progress_send_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

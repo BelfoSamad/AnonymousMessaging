@@ -15,6 +15,10 @@ public interface SendMessageContract {
         void sendMessage(String uid, String message);
 
         void loadAd(AdView ad);
+
+        void loadInterstitialAd();
+
+        void showInterstitialAd();
     }
 
     interface View extends BaseView {

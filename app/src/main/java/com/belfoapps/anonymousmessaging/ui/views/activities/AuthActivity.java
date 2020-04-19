@@ -289,10 +289,4 @@ public class AuthActivity extends AppCompatActivity implements AuthContract.View
     public void showErrorUsername() {
         registerFragment.setEmptyUsernameError();
     }
-
-
-    public void hideSoftKeyboard(View view) {
-        InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        mInputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
-    }
 }

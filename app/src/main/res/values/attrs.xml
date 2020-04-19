@@ -6,5 +6,6 @@
         <attr name="backgroundColor" format="color"/>
         <attr name="iconColor" format="color"/>
         <attr name="cardColor" format="color"/>
+        <attr name="dividerColor" format="color"/>
     </declare-styleable>
 </resources>

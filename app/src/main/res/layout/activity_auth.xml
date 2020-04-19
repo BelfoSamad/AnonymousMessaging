@@ -34,7 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:background="@android:color/darker_gray" />
+            android:background="?attr/dividerColor" />
 
         <TextView
             android:id="@+id/or_text"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/or"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="?attr/dividerColor" />
 
         <View
             android:layout_width="0dp"
@@ -52,7 +52,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="16dp"
-            android:background="@android:color/darker_gray" />
+            android:background="?attr/dividerColor" />
 
     </RelativeLayout>
 

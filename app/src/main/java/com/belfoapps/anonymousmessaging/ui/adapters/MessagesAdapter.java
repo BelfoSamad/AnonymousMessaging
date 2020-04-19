@@ -43,12 +43,16 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MessagesAdapter.ViewHolder holder, int position) {
+        //Set Message Style (RTL-Support)
         if (mView.getResources().getBoolean(R.bool.is_right_to_left))
             holder.message.setBackground(mView.getResources().getDrawable(R.drawable.message_background_rtl));
         else
-            holder.message.setBackground(mView.getResources().getDrawable(R.drawable.message_background_rtl));
+            holder.message.setBackground(mView.getResources().getDrawable(R.drawable.message_background_ltr));
 
+        //Set Message
         holder.message.setText(mMessages.get(position).getMessage());
+
+        //Deleting Mesage
         holder.delete.setOnClickListener(v -> {
             mPresenter.deleteMessage(position);
             if (mView.getResources().getBoolean(R.bool.is_right_to_left))
@@ -57,9 +61,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 holder.container.startAnimation(AnimationUtils.loadAnimation(mView, R.anim.slide_ltr));
             holder.container.setVisibility(View.GONE);
         });
+
+        //Set Message (Liked/Unliked)
         if (mMessages.get(position).isLiked())
             holder.like.setImageResource(R.drawable.liked);
         else holder.like.setImageResource(R.drawable.unliked);
+
+        //Like/Unlike Message
         holder.like.setOnClickListener(v -> {
             if (!mMessages.get(position).isLiked())
                 holder.like.setImageResource(R.drawable.liked);

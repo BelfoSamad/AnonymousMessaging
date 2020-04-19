@@ -105,6 +105,9 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
 
         //Init Ad Banner
         initAdBanner();
+
+        //Load Interstitial Ad
+        mPresenter.loadInterstitialAd();
     }
 
     @Override
@@ -127,7 +130,7 @@ public class SendMessageActivity extends AppCompatActivity implements SendMessag
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(SendMessageActivity.this, AuthActivity.class));
+        mPresenter.showInterstitialAd();
     }
 
     @Override

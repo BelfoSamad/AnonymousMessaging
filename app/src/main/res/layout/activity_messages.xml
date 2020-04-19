@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/ADMOB_BANNER_ID"
+            ads:adUnitId="@string/AD_BANNER_ID"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

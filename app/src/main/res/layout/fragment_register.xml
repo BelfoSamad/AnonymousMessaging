@@ -11,6 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="128dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/logo"
+            app:layout_constraintBottom_toTopOf="@id/register_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/register_text"
             android:layout_width="wrap_content"
@@ -33,7 +45,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.63">
+            app:layout_constraintVertical_bias="0.8">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username"
@@ -42,6 +54,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
+                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="clear_text"
@@ -55,7 +68,9 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="@string/username"
-                    android:textAlignment="viewStart" />
+                    android:textAlignment="viewStart"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textColorHint="?attr/secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,6 +83,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
+                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="clear_text"
@@ -82,7 +98,9 @@
                     android:background="@null"
                     android:hint="@string/email"
                     android:inputType="textPassword"
-                    android:textAlignment="viewStart" />
+                    android:textAlignment="viewStart"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textColorHint="?attr/secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,6 +113,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
+                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="password_toggle"
@@ -109,7 +128,9 @@
                     android:background="@null"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:textAlignment="viewStart" />
+                    android:textAlignment="viewStart"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textColorHint="?attr/secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,6 +143,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_background"
+                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:textAlignment="center"
                 app:endIconMode="password_toggle"
@@ -136,7 +158,9 @@
                     android:background="@null"
                     android:hint="@string/confirm_password"
                     android:inputType="textPassword"
-                    android:textAlignment="viewStart" />
+                    android:textAlignment="viewStart"
+                    android:textColor="?attr/primaryTextColor"
+                    android:textColorHint="?attr/secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

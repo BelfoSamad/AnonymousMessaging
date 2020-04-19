@@ -8,6 +8,8 @@
     <color name="darkBackgroundColor">#000000</color>
     <color name="lightCardColor">#eef3f9</color>
     <color name="darkCardColor">#1c1c1c</color>
+    <color name="lightDividerColor">#1FFFFFFF</color>
+    <color name="darkDividerColor">#FFFFFF</color>
     <color name="message_color">#48baff</color>
 
     <color name="red">#FF0007</color>
